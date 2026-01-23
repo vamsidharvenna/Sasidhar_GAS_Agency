@@ -1,0 +1,138 @@
+import type { ContactInfo, QuickActionItem, TranslationDict } from "../types";
+
+export const translations: TranslationDict = {
+  en: {
+    nav_home: "Home",
+    nav_services: "Services",
+    nav_products: "Products",
+    nav_staff: "Staff",
+    nav_contact: "Contact",
+    hero_title: "SASIDHAR GAS AGENCY (HP)",
+    cta_chat: "Chat Now for Help",
+    btn_call: "Call",
+    btn_wa: "WhatsApp",
+    quick_actions_title: "Quick Actions",
+    tile_new_conn: "New LPG Connection",
+    tile_complaint: "Complaint / Issue",
+    tile_delivery: "Delivery Status",
+    tile_buy: "Buy Products",
+    tile_staff: "Talk to Staff",
+    tile_safety: "Safety Guide",
+    delivery_title: "Delivery & Timings",
+    timings_head: "🕒 Office Timings",
+    sunday_closed: "Sunday: Closed",
+    delivery_note_head: "🚚 Delivery Estimates",
+    delivery_note_body:
+      "Estimated delivery depends on your area and booking day. Routes are scheduled weekly.",
+    btn_check_delivery: "Check My Delivery Date",
+    products_title: "Buy Accessories",
+    prod_stove: "Gas Stove / Hoses",
+    prod_desc: "High quality stoves, safety hoses, and lighters available.",
+    btn_enquire: "Enquire on WhatsApp",
+    staff_title: "Staff Contacts",
+    office_staff: "Office Staff",
+    delivery_staff: "Delivery Staff",
+    safety_title: "Safety First",
+    safe_1: "Keep cylinder upright.",
+    safe_2: "Check rubber tube regularly.",
+    safe_3: "Don't store near flames.",
+    safe_4: "Turn off regulator at night.",
+    emergency_label: "EMERGENCY: Gas Leak?",
+    leak_steps: "Open windows. Do not use electric switches. Evacuate.",
+    contact_title: "Contact Us",
+    chat_welcome: "Hello! How can I help you today?",
+  },
+  te: {
+    nav_home: "హోమ్",
+    nav_services: "సేవలు",
+    nav_products: "ఉత్పత్తులు",
+    nav_staff: "సిబ్బంది",
+    nav_contact: "సంప్రదించండి",
+    hero_title: "සසిధర్ గ్యాస్ ఏజెన్సీ (HP)",
+    cta_chat: "సహాయం కోసం చాట్ చేయండి",
+    btn_call: "కాల్ చేయండి",
+    btn_wa: "వాట్సాప్",
+    quick_actions_title: "త్వరిత సేవలు",
+    tile_new_conn: "కొత్త LPG కనెక్షన్",
+    tile_complaint: "ఫిర్యాదు / సమస్య",
+    tile_delivery: "డెలివరీ స్థితి",
+    tile_buy: "ఉత్పత్తులు కొనండి",
+    tile_staff: "సిబ్బంది వివరాలు",
+    tile_safety: "భద్రతా సూచనలు",
+    delivery_title: "డెలివరీ & సమయాలు",
+    timings_head: "🕒 ఆఫీసు సమయాలు",
+    sunday_closed: "ఆదివారం: సెలవు",
+    delivery_note_head: "🚚 డెలివరీ అంచనా",
+    delivery_note_body: "మీ ఏరియా మరియు బుకింగ్ రోజును బట్టి డెలివరీ ఉంటుంది.",
+    btn_check_delivery: "డెలివరీ వివరాలు చాట్ లో అడగండి",
+    products_title: "పరికరాలు కొనండి",
+    prod_stove: "గ్యాస్ స్టవ్ / పైపు / రెగ్యులేటర్",
+    prod_desc: "లభ్యత మారవచ్చు. వాట్సాప్‌లో నిర్ధారించండి.",
+    btn_enquire: "వాట్సాప్‌లో అడగండి",
+    staff_title: "సిబ్బంది వివరాలు",
+    office_staff: "ఆఫీసు సిబ్బంది",
+    delivery_staff: "డెలివరీ సిబ్బంది",
+    safety_title: "భద్రత ముఖ్యం",
+    safe_1: "సిలిండర్ నిలువుగా ఉంచండి.",
+    safe_2: "రబ్బరు ట్యూబ్‌ను తరచుగా తనిఖీ చేయండి.",
+    safe_3: "మంటల దగ్గర ఉంచవద్దు.",
+    safe_4: "వాడనప్పుడు రెగ్యులేటర్ ఆఫ్ చేయండి.",
+    emergency_label: "అత్యవసరం: గ్యాస్ లీక్ / మంటలు",
+    leak_steps:
+      "కిటికీలు తెరవండి, స్విచ్‌లు వేయవద్దు, రెగ్యులేటర్ ఆపి బయటకు రండి.",
+    contact_title: "మమ్మల్ని సంప్రదించండి",
+    chat_welcome: "నమస్కారం! నేను మీకు ఎలా సహాయపడగలను?",
+  },
+};
+
+export const heroImages: string[] = [
+  "https://storage.googleapis.com/sasidharstorage/Head/image%20(2).png",
+  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20180624-WA0011.jpg",
+  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20180825-WA0008.jpg",
+  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20180825-WA0022.jpg",
+  "https://storage.googleapis.com/sasidharstorage/sub%20head/image%20(3).png",
+  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG_20250305_173624.jpg",
+  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG_20200829_130457.jpg",
+  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG_20181027_165451.jpg",
+  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181113-WA0022.jpg",
+  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181106-WA0003.jpg",
+  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181103-WA0135.jpg",
+  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181103-WA0123.jpg",
+  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181031-WA0041.jpg",
+  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181031-WA0026.jpg",
+  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20180913-WA0029.jpg",
+];
+
+export const quickActions: QuickActionItem[] = [
+  {
+    icon: "🔥",
+    labelKey: "tile_new_conn",
+    href: null,
+    topic: "new_connection",
+  },
+  { icon: "⚠️", labelKey: "tile_complaint", href: null, topic: "complaint" },
+  { icon: "🚚", labelKey: "tile_delivery", href: null, topic: "delivery" },
+  { icon: "🛒", labelKey: "tile_buy", href: "#products", topic: null },
+  { icon: "👥", labelKey: "tile_staff", href: "#staff", topic: null },
+  { icon: "🧯", labelKey: "tile_safety", href: "#safety", topic: null },
+];
+
+export const safetyTips: string[] = ["safe_1", "safe_2", "safe_3", "safe_4"];
+
+export const contactInfo: ContactInfo = {
+  name: "Sasidhar Gas Agency (HP)",
+  address: "D.NO. 15-223, Main Road, near police station",
+  city: "Piduguralla",
+  state: "Andhra Pradesh",
+  postalCode: "522413",
+  officeNumber: "+918649255551",
+  whatsappNumber: "+919866195074",
+  fireStationNumber: "+919642770955",
+  mapsUrl: "https://maps.app.goo.gl/1HkGRZBqhADZGNHM6",
+};
+
+export const HP_LOGO_URL =
+  "https://upload.wikimedia.org/wikipedia/en/thumb/8/87/HP_Gas_Logo.svg/1200px-HP_Gas_Logo.svg.png";
+
+export const PRODUCT_IMAGE_URL =
+  "https://drive.google.com/uc?export=view&id=1r-BNmdTjuaFdNUTQeVcGqp7SIsTil0bJ";

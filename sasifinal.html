@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasidhar Gas Agency (HP) - Piduguralla</title>
+    <meta name="description" content="Official website of Sasidhar Gas Agency (HP), Piduguralla. Book LPG, New Connections, Complaints & Support.">
+    
+    <!-- Schema for Local Business -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "GasStation",
+      "name": "Sasidhar Gas Agency (HP)",
+      "image": "https://storage.googleapis.com/sasidharstorage/Head/image%20(2).png",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "D.NO. 15-223, Main Road, near police station",
+        "addressLocality": "Piduguralla",
+        "addressRegion": "Andhra Pradesh",
+        "postalCode": "522413",
+        "addressCountry": "IN"
+      },
+      "telephone": "+918649255551",
+      "openingHours": "Mo-Sat 09:30-19:00"
+    }
+    </script>
+
+    <style>
+        :root {
+            --hp-blue: #004A99;
+            --hp-red: #D31018;
+            --hp-light-blue: #eef4fb;
+            --text-dark: #333;
+            --text-light: #666;
+            --white: #ffffff;
+            --whatsapp-green: #25D366;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- UTILITY --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            color: var(--hp-blue);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s ease-in-out;
+            border: none;
+            font-size: 1rem;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.14);
+        }
+        .btn-primary { background: var(--hp-blue); color: white; }
+        .btn-secondary { background: #b40e17; color: white; }
+        .btn-outline { border: 2px solid var(--hp-blue); color: var(--hp-blue); background: white; box-shadow: none; }
+        .btn-whatsapp { background: #1da851; color: white; }
+        .btn-block { display: block; width: 100%; margin-bottom: 10px; }
+
+        /* --- HEADER --- */
+        header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 22px;
+            gap: 12px;
+        }
+        .logo {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--hp-blue);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo span { color: var(--hp-red); }
+        .logo img { height: 42px; width: auto; }
+        .lang-switch {
+            background: var(--hp-light-blue);
+            padding: 8px 14px;
+            border-radius: 22px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 1px solid var(--hp-blue);
+            color: var(--hp-blue);
+            font-weight: bold;
+        }
+
+        /* --- NAV --- */
+        nav { display: none; background: var(--hp-blue); color: white; }
+        @media(min-width: 768px) {
+            nav { display: block; }
+            nav ul { display: flex; justify-content: center; gap: 26px; padding: 14px 20px; }
+            nav a { color: white; font-size: 0.95rem; }
+        }
+
+        /* --- HERO SECTION (Main Head Image) --- */
+        .hero {
+            position: relative;
+            padding: 0;
+            margin: 0;
+            border-bottom: none;
+            height: 650px;
+            background: linear-gradient(135deg, #eef4fb, #dfeaf8);
+            overflow: hidden;
+        }
+        .hero-slider {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            background: #eef4fb;
+        }
+        .hero-slide {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: contain;
+            object-position: center center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background: #eef4fb;
+        }
+        .hero-slide.active { opacity: 1; }
+        .hero-fallback {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--hp-blue);
+            font-weight: 600;
+            padding: 0 20px;
+            background: linear-gradient(135deg, #eef4fb, #dfeaf8);
+        }
+
+        .cta-block {
+            text-align: center;
+            padding: 28px 15px 22px;
+            background: var(--hp-light-blue);
+            border-bottom: 1px solid #e6e6e6;
+            margin-top: -60px;
+            position: relative;
+            z-index: 3;
+            box-shadow: 0 -8px 20px rgba(0,0,0,0.08);
+        }
+        .cta-block .container {
+            max-width: 900px;
+        }
+        .cta-block .cta-title {
+            font-size: 1.85rem;
+            color: var(--hp-blue);
+            margin-bottom: 14px;
+            text-transform: uppercase;
+        }
+        .cta-block .hero-btns {
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+        .cta-block .hero-sub-btns { width: 100%; }
+        .hero-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .hero-sub-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .hero-sub-btns .btn { flex: 1; }
+
+        /* --- RESPONSIVE --- */
+        @media(max-width: 767px) {
+            .top-bar { padding: 12px 16px; }
+            .logo img { height: 36px; }
+            .hero { height: 420px; }
+            .cta-block { margin-top: -70px; padding: 24px 12px 20px; }
+            .cta-block .cta-title { font-size: 1.55rem; }
+            .hero-btns { gap: 14px; }
+            .hero-sub-btns { flex-direction: column; }
+            .btn { padding: 14px 18px; }
+            .section-title { font-size: 1.5rem; }
+        }
+
+        /* --- QUICK ACTIONS (GRID) --- */
+        .quick-actions { padding: 70px 0 60px; }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        @media(min-width: 768px) { .grid-container { grid-template-columns: repeat(3, 1fr); } }
+        
+        .tile {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            cursor: pointer;
+            border: 1px solid #eee;
+        }
+        .tile:hover { transform: translateY(-3px); border-color: var(--hp-blue); }
+        .tile-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+        .tile h3 { font-size: 1rem; color: var(--hp-blue); }
+
+        /* --- SECTIONS GENERAL --- */
+        section { padding: 40px 15px; border-bottom: 1px solid #eee; }
+        .info-card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 5px solid var(--hp-blue); }
+        
+        /* --- PRODUCTS --- */
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .product-header {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        .product-body { padding: 15px; }
+
+        /* --- STAFF --- */
+        .staff-card {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .staff-info { flex-grow: 1; }
+        .staff-actions { display: flex; gap: 10px; }
+
+        /* --- SAFETY --- */
+        .safety-list li { margin-bottom: 10px; padding-left: 20px; position: relative; }
+        .safety-list li::before { content: "⚠️"; position: absolute; left: 0; }
+
+        /* --- FLOATING CTA --- */
+        .floating-cta {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 999;
+        }
+        .float-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .wa-float { background: var(--whatsapp-green); }
+        .call-float { background: var(--hp-blue); }
+        .chat-float { background: var(--hp-red); animation: pulse 2s infinite; }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Chatbot Placeholder Styling */
+        #chatbot-widget {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: none; /* Hidden by default */
+            z-index: 1001;
+            border-radius: 10px;
+            flex-direction: column;
+        }
+        .chat-header { background: var(--hp-blue); color: white; padding: 10px; border-radius: 10px 10px 0 0; display: flex; justify-content: space-between;}
+        .chat-body { padding: 20px; flex-grow: 1; text-align: center; color: #777; font-size: 0.9rem;}
+
+    </style>
+</head>
+<body>
+
+    <!-- STICKY HEADER -->
+    <header>
+        <div class="top-bar container">
+            <div class="logo">
+                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/87/HP_Gas_Logo.svg/1200px-HP_Gas_Logo.svg.png" alt="HP Logo" height="30">
+                <div>Sasidhar Gas <span>(HP)</span></div>
+            </div>
+            <button class="lang-switch" onclick="toggleLanguage()">
+                🇺🇸 EN / 🇮🇳 తెలుగు
+            </button>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#home" data-i18n="nav_home">Home</a></li>
+                <li><a href="#services" data-i18n="nav_services">Services</a></li>
+                <li><a href="#products" data-i18n="nav_products">Products</a></li>
+                <li><a href="#staff" data-i18n="nav_staff">Staff</a></li>
+                <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- HERO SLIDER -->
+    <section id="home" class="hero">
+        <div class="hero-slider" id="hero-slider"></div>
+        <div class="hero-fallback" id="hero-fallback">
+            Hero images are not loading. Please check the storage links or permissions.
+        </div>
+    </section>
+
+    <!-- CALL TO ACTIONS -->
+    <section class="cta-block">
+        <div class="container">
+            <h1 class="cta-title" data-i18n="hero_title">SASIDHAR GAS AGENCY (HP)</h1>
+            
+            <div class="hero-btns">
+                <button class="btn btn-primary btn-block" onclick="openChat()" style="font-size: 1.1rem;">
+                    <span data-i18n="cta_chat">Chat Now for Help</span>
+                </button>
+                
+                <div class="hero-sub-btns">
+                    <a href="tel:+918649255551" class="btn btn-secondary">
+                        <span data-i18n="btn_call">Call</span>
+                    </a>
+                    <a href="https://wa.me/919866195074" class="btn btn-whatsapp">
+                        <span data-i18n="btn_wa">WhatsApp</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+
+<!-- QUICK ACTIONS -->
+    <section class="container quick-actions">
+        <h2 class="section-title" data-i18n="quick_actions_title">Quick Actions</h2>
+        <div class="grid-container">
+            <div class="tile" onclick="openChat('new_connection')">
+                <span class="tile-icon">🔥</span>
+                <h3 data-i18n="tile_new_conn">New LPG Connection</h3>
+            </div>
+            <div class="tile" onclick="openChat('complaint')">
+                <span class="tile-icon">⚠️</span>
+                <h3 data-i18n="tile_complaint">Complaint / Issue</h3>
+            </div>
+            <div class="tile" onclick="openChat('delivery')">
+                <span class="tile-icon">🚚</span>
+                <h3 data-i18n="tile_delivery">Delivery Status</h3>
+            </div>
+            <div class="tile" onclick="document.getElementById('products').scrollIntoView()">
+                <span class="tile-icon">🛒</span>
+                <h3 data-i18n="tile_buy">Buy Products</h3>
+            </div>
+            <div class="tile" onclick="document.getElementById('staff').scrollIntoView()">
+                <span class="tile-icon">👥</span>
+                <h3 data-i18n="tile_staff">Talk to Staff</h3>
+            </div>
+            <div class="tile" onclick="document.getElementById('safety').scrollIntoView()">
+                <span class="tile-icon">🧯</span>
+                <h3 data-i18n="tile_safety">Safety Guide</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- DELIVERY INFO -->
+    <section id="services" class="container">
+        <h2 class="section-title" data-i18n="delivery_title">Delivery & Timings</h2>
+        <div class="info-card">
+            <h3 data-i18n="timings_head">🕒 Office Timings</h3>
+            <p>Mon – Sat: 9:30 AM – 7:00 PM</p>
+            <p data-i18n="sunday_closed">Sunday: Closed</p>
+        </div>
+        <div class="info-card">
+            <h3 data-i18n="delivery_note_head">🚚 Delivery Estimates</h3>
+            <p data-i18n="delivery_note_body">Estimated delivery depends on your area and booking day. Routes are scheduled weekly.</p>
+            <button class="btn btn-outline btn-block" style="margin-top:10px" onclick="openChat('delivery_check')" data-i18n="btn_check_delivery">Check My Delivery Date</button>
+        </div>
+    </section>
+
+    <!-- BUY PRODUCTS -->
+    <section id="products" class="container">
+        <h2 class="section-title" data-i18n="products_title">Buy Accessories</h2>
+        <div class="product-card">
+            <!-- Fixed Product Image -->
+            <div class="product-header" style="background-image: url('https://drive.google.com/uc?export=view&id=1r-BNmdTjuaFdNUTQeVcGqp7SIsTil0bJ');"></div>
+            <div class="product-body">
+                <h3 data-i18n="prod_stove">Gas Stove / Hoses</h3>
+                <p data-i18n="prod_desc">High quality stoves, safety hoses, and lighters available.</p>
+                <button class="btn btn-whatsapp btn-block" onclick="window.location.href='https://wa.me/919866195074?text=I want to buy gas stove accessories'" data-i18n="btn_enquire">Enquire on WhatsApp</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- STAFF CONTACTS -->
+    <section id="staff" class="container">
+        <h2 class="section-title" data-i18n="staff_title">Staff Contacts</h2>
+        
+        <h4 style="margin-bottom:10px; color:#666;" data-i18n="office_staff">Office Staff</h4>
+        <div class="staff-card">
+            <div class="staff-info">
+                <strong>Manager</strong><br>
+                <span style="font-size:0.8rem; color:grey;">Administration</span>
+            </div>
+            <div class="staff-actions">
+                <a href="tel:+918649255551" class="btn btn-primary">📞</a>
+            </div>
+        </div>
+
+        <h4 style="margin-bottom:10px; color:#666; margin-top:20px;" data-i18n="delivery_staff">Delivery Staff</h4>
+        <div class="staff-card">
+            <div class="staff-info">
+                <strong>Delivery Team</strong><br>
+                <span style="font-size:0.8rem; color:grey;">Piduguralla Area</span>
+            </div>
+            <div class="staff-actions">
+                <a href="tel:+918649255551" class="btn btn-primary">📞</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SAFETY -->
+    <section id="safety" class="container" style="background:#fff3f3;">
+        <h2 class="section-title" style="color:var(--hp-red);" data-i18n="safety_title">Safety First</h2>
+        <ul class="safety-list">
+            <li data-i18n="safe_1">Keep cylinder upright.</li>
+            <li data-i18n="safe_2">Check rubber tube regularly.</li>
+            <li data-i18n="safe_3">Don't store near flames.</li>
+            <li data-i18n="safe_4">Turn off regulator at night.</li>
+        </ul>
+        <div class="info-card" style="border-left-color: var(--hp-red); margin-top:20px;">
+            <strong style="color:red;" data-i18n="emergency_label">EMERGENCY: Gas Leak?</strong><br>
+            <span data-i18n="leak_steps">Open windows. Do not use electric switches. Evacuate.</span><br>
+            <a href="tel:+919642770955" class="btn btn-secondary btn-block" style="margin-top:10px;">📞 Call Fire Station</a>
+        </div>
+    </section>
+
+    <!-- CONTACT & FOOTER -->
+    <section id="contact" class="container" style="text-align:center;">
+        <h2 class="section-title" data-i18n="contact_title">Contact Us</h2>
+        <p><strong>Sasidhar Gas Agency (HP)</strong></p>
+        <p style="font-size:0.9rem; color:#555; margin-bottom:15px;">
+            D.NO. 15-223, Main Road, near police station,<br>
+            Piduguralla, Andhra Pradesh 522413
+        </p>
+        <a href="https://maps.app.goo.gl/1HkGRZBqhADZGNHM6" class="btn btn-outline btn-block">📍 Get Directions</a>
+        <br>
+        <a href="tel:+918649255551" class="btn btn-primary btn-block">📞 Office: 08649-255551</a>
+        <a href="https://wa.me/919866195074" class="btn btn-whatsapp btn-block">🟢 Mobile/WA: +91 98661 95074</a>
+    </section>
+
+    <footer style="background:#333; color:white; text-align:center; padding:20px; font-size:0.8rem;">
+        &copy; 2024 Sasidhar Gas Agency. All rights reserved.
+    </footer>
+
+    <!-- FLOATING BUTTONS -->
+    <div class="floating-cta">
+        <a href="tel:+918649255551" class="float-btn call-float">📞</a>
+        <a href="https://wa.me/919866195074" class="float-btn wa-float">🟢</a>
+        <div onclick="openChat()" class="float-btn chat-float">💬</div>
+    </div>
+
+    <!-- CHATBOT WIDGET PLACEHOLDER -->
+    <div id="chatbot-widget">
+        <div class="chat-header">
+            <span>Sasidhar Assistant</span>
+            <span style="cursor:pointer;" onclick="closeChat()">✖</span>
+        </div>
+        <div class="chat-body">
+            <p data-i18n="chat_welcome">Hello! How can I help you today?</p>
+            <hr style="margin:10px 0; border:0; border-top:1px solid #eee;">
+            <button class="btn btn-outline btn-block" style="font-size:0.8rem;" onclick="location.href='https://wa.me/919866195074?text=Book Cylinder'">Book Cylinder</button>
+            <button class="btn btn-outline btn-block" style="font-size:0.8rem;" onclick="location.href='https://wa.me/919866195074?text=New Connection'">New Connection</button>
+            <button class="btn btn-outline btn-block" style="font-size:0.8rem;" onclick="location.href='https://wa.me/919866195074?text=Complaint'">Register Complaint</button>
+            <p style="margin-top:20px; font-size:0.7rem;">(Integration Ready: Embed Dialogflow/Widget Script here)</p>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // --- HERO SLIDER LOGIC (merged head + gallery) ---
+        const heroUrls = [
+            'https://storage.googleapis.com/sasidharstorage/Head/image%20(2).png',
+            'https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20180624-WA0011.jpg',
+            'https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20180825-WA0008.jpg',
+            'https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20180825-WA0022.jpg',
+            'https://storage.googleapis.com/sasidharstorage/sub%20head/image%20(3).png',
+            'https://storage.googleapis.com/sasidharstorage/sub%20head/IMG_20250305_173624.jpg',
+            'https://storage.googleapis.com/sasidharstorage/sub%20head/IMG_20200829_130457.jpg',
+            'https://storage.googleapis.com/sasidharstorage/sub%20head/IMG_20181027_165451.jpg',
+            'https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181113-WA0022.jpg',
+            'https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181106-WA0003.jpg',
+            'https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181103-WA0135.jpg',
+            'https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181103-WA0123.jpg',
+            'https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181031-WA0041.jpg',
+            'https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181031-WA0026.jpg',
+            'https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20180913-WA0029.jpg'
+        ];
+
+        const heroWrapper = document.getElementById('hero-slider');
+        const heroFallback = document.getElementById('hero-fallback');
+        let heroSlides = [];
+        let heroIndex = 0;
+
+        function preloadHeroSlides(urls) {
+            if (!urls.length) {
+                showHeroFallback();
+                return;
+            }
+
+            let pending = urls.length;
+            const loaded = [];
+
+            urls.forEach(url => {
+                const img = new Image();
+                img.onload = () => { loaded.push(url); checkDone(); };
+                img.onerror = () => { checkDone(); };
+                img.src = url;
+            });
+
+            function checkDone() {
+                pending--;
+                if (pending === 0) {
+                    if (loaded.length) {
+                        buildHeroSlides(loaded);
+                        startHeroSlider();
+                    } else {
+                        showHeroFallback();
+                    }
+                }
+            }
+        }
+
+        function buildHeroSlides(urls) {
+            if (!heroWrapper) return;
+            heroWrapper.innerHTML = '';
+            urls.forEach((url, idx) => {
+                const slide = document.createElement('img');
+                slide.className = 'hero-slide' + (idx === 0 ? ' active' : '');
+                slide.src = url;
+                slide.alt = 'Sasidhar Gas Agency showcase';
+                heroWrapper.appendChild(slide);
+            });
+            heroSlides = Array.from(heroWrapper.querySelectorAll('.hero-slide'));
+        }
+
+        function startHeroSlider() {
+            if (!heroSlides.length) {
+                showHeroFallback();
+                return;
+            }
+
+            setInterval(() => {
+                heroSlides[heroIndex].classList.remove('active');
+                heroIndex = (heroIndex + 1) % heroSlides.length;
+                heroSlides[heroIndex].classList.add('active');
+            }, 5000);
+        }
+
+        function showHeroFallback() {
+            if (heroWrapper) { heroWrapper.style.display = 'none'; }
+            if (heroFallback) { heroFallback.style.display = 'flex'; }
+            console.warn('Hero images could not be loaded. Check storage permissions or links.');
+        }
+
+        preloadHeroSlides(heroUrls);
+
+        // --- CHAT WIDGET LOGIC ---
+        function openChat(topic) {
+            const widget = document.getElementById('chatbot-widget');
+            widget.style.display = 'flex';
+        }
+
+        function closeChat() {
+            document.getElementById('chatbot-widget').style.display = 'none';
+        }
+
+        // --- MULTI-LANGUAGE LOGIC ---
+        let currentLang = 'en';
+        
+        const translations = {
+            en: {
+                nav_home: "Home", nav_services: "Services", nav_products: "Products", nav_staff: "Staff", nav_contact: "Contact",
+                hero_title: "SASIDHAR GAS AGENCY (HP)",
+                cta_chat: "Chat Now for Help",
+                btn_call: "Call",
+                btn_wa: "WhatsApp",
+                quick_actions_title: "Quick Actions",
+                tile_new_conn: "New LPG Connection",
+                tile_complaint: "Complaint / Issue",
+                tile_delivery: "Delivery Estimates",
+                tile_buy: "Buy Products",
+                tile_staff: "Staff Contacts",
+                tile_safety: "Safety Guidance",
+                delivery_title: "Delivery & Timings",
+                timings_head: "🕒 Office Timings",
+                sunday_closed: "Sunday: Closed",
+                delivery_note_head: "🚚 Delivery Estimates",
+                delivery_note_body: "Estimated delivery depends on your area and booking day.",
+                btn_check_delivery: "Check Delivery Estimate in Chat",
+                products_title: "Buy Accessories",
+                prod_stove: "Gas Stove / Pipe / Regulator",
+                prod_desc: "Availability may vary. Confirm via WhatsApp.",
+                btn_enquire: "Enquire on WhatsApp",
+                staff_title: "Staff Contacts",
+                office_staff: "Office Staff",
+                delivery_staff: "Delivery Staff",
+                safety_title: "Safety First",
+                safe_1: "Keep cylinder upright",
+                safe_2: "Check rubber tube/regulator regularly",
+                safe_3: "Don’t store near flames",
+                safe_4: "Turn off regulator when not in use",
+                emergency_label: "EMERGENCY: Gas Leak / Fire",
+                leak_steps: "Open windows, don't switch electricals, close regulator, exit.",
+                contact_title: "Contact Us",
+                chat_welcome: "Hello! How can I help you today?"
+            },
+            te: {
+                nav_home: "హోమ్", nav_services: "సేవలు", nav_products: "ఉత్పత్తులు", nav_staff: "సిబ్బంది", nav_contact: "సంప్రదించండి",
+                hero_title: "ససిధర్ గ్యాస్ ఏజెన్సీ (HP)",
+                cta_chat: "సహాయం కోసం చాట్ చేయండి",
+                btn_call: "కాల్ చేయండి",
+                btn_wa: "వాట్సాప్",
+                quick_actions_title: "త్వరిత సేవలు",
+                tile_new_conn: "కొత్త LPG కనెక్షన్",
+                tile_complaint: "ఫిర్యాదు / సమస్య",
+                tile_delivery: "డెలివరీ స్థితి",
+                tile_buy: "ఉత్పత్తులు కొనండి",
+                tile_staff: "సిబ్బంది వివరాలు",
+                tile_safety: "భద్రతా సూచనలు",
+                delivery_title: "డెలివరీ & సమయాలు",
+                timings_head: "🕒 ఆఫీసు సమయాలు",
+                sunday_closed: "ఆదివారం: సెలవు",
+                delivery_note_head: "🚚 డెలివరీ అంచనా",
+                delivery_note_body: "మీ ఏరియా మరియు బుకింగ్ రోజును బట్టి డెలివరీ ఉంటుంది.",
+                btn_check_delivery: "డెలివరీ వివరాలు చాట్ లో అడగండి",
+                products_title: "పరికరాలు కొనండి",
+                prod_stove: "గ్యాస్ స్టవ్ / పైపు / రెగ్యులేటర్",
+                prod_desc: "లభ్యత మారవచ్చు. వాట్సాప్‌లో నిర్ధారించండి.",
+                btn_enquire: "వాట్సాప్‌లో అడగండి",
+                staff_title: "సిబ్బంది వివరాలు",
+                office_staff: "ఆఫీసు సిబ్బంది",
+                delivery_staff: "డెలివరీ సిబ్బంది",
+                safety_title: "భద్రత ముఖ్యం",
+                safe_1: "సిలిండర్ నిలువుగా ఉంచండి",
+                safe_2: "రబ్బరు ట్యూబ్/రెగ్యులేటర్‌ను తరచుగా తనిఖీ చేయండి",
+                safe_3: "మంటల దగ్గర ఉంచవద్దు",
+                safe_4: "వాడనప్పుడు రెగ్యులేటర్ ఆఫ్ చేయండి",
+                emergency_label: "అత్యవసరం: గ్యాస్ లీక్ / మంటలు",
+                leak_steps: "కిటికీలు తెరవండి, స్విచ్‌లు వేయవద్దు, రెగ్యులేటర్ ఆపి బయటకు రండి.",
+                contact_title: "మమ్మల్ని సంప్రదించండి",
+                chat_welcome: "నమస్కారం! నేను మీకు ఎలా సహాయపడగలను?"
+            }
+        };
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'te' : 'en';
+            const elements = document.querySelectorAll('[data-i18n]');
+            
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    el.innerText = translations[currentLang][key];
+                }
+            });
+
+            // Update button text
+            const btn = document.querySelector('.lang-switch');
+            btn.innerText = currentLang === 'en' ? "🇺🇸 EN / 🇮🇳 తెలుగు" : "🇮🇳 తెలుగు / 🇺🇸 EN";
+        }
+    </script>
+</body>
+</html>

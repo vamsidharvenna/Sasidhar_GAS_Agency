@@ -7,6 +7,7 @@ import { Contact } from './components/sections/Contact';
 import { CTABlock } from './components/sections/CTABlock';
 import { DeliveryInfo } from './components/sections/DeliveryInfo';
 import { HeroSlider } from './components/sections/HeroSlider';
+import { RefillOptions } from './components/sections/RefillOptions';
 import { Products } from './components/sections/Products';
 import { QuickActions } from './components/sections/QuickActions';
 import { Safety } from './components/sections/Safety';
@@ -31,6 +32,7 @@ const App: React.FC = () =>
 
             <QuickActions />
             <DeliveryInfo />
+            <RefillOptions />
             <Products />
             <Staff />
             <Safety />
@@ -47,3 +49,4 @@ const App: React.FC = () =>
 };
 
 export default App;
+console.log("WEB ALERTS URL =", import.meta.env.VITE_WEB_ALERTS_API_BASE_URL);

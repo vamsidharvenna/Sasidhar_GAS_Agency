@@ -16,7 +16,7 @@ export const translations: TranslationDict = {
     tile_complaint: "Complaint / Issue",
     tile_delivery: "Delivery Status",
     tile_buy: "Buy Products",
-    tile_staff: "Talk to Staff",
+    tile_staff: "Delivery boy contact details",
     tile_safety: "Safety Guide",
     delivery_title: "Delivery & Timings",
     timings_head: "🕒 Office Timings",
@@ -57,7 +57,7 @@ export const translations: TranslationDict = {
     tile_complaint: "ఫిర్యాదు / సమస్య",
     tile_delivery: "డెలివరీ స్థితి",
     tile_buy: "ఉత్పత్తులు కొనండి",
-    tile_staff: "సిబ్బంది వివరాలు",
+    tile_staff: "డెలివరీ బాయ్ సంప్రదింపు వివరాలు",
     tile_safety: "భద్రతా సూచనలు",
     delivery_title: "డెలివరీ & సమయాలు",
     timings_head: "🕒 ఆఫీసు సమయాలు",
@@ -80,27 +80,76 @@ export const translations: TranslationDict = {
     emergency_label: "అత్యవసరం: గ్యాస్ లీక్ / మంటలు",
     leak_steps:
       "కిటికీలు తెరవండి, స్విచ్‌లు వేయవద్దు, రెగ్యులేటర్ ఆపి బయటకు రండి.",
-    contact_title: "మమ్మల్ని సంప్రదించండి",
+  contact_title: "మమ్మల్ని సంప్రదించండి",
     chat_welcome: "నమస్కారం! నేను మీకు ఎలా సహాయపడగలను?",
   },
 };
 
-export const heroImages: string[] = [
-  "https://storage.googleapis.com/sasidharstorage/Head/image%20(2).png",
-  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20180624-WA0011.jpg",
-  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20180825-WA0008.jpg",
-  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20180825-WA0022.jpg",
-  "https://storage.googleapis.com/sasidharstorage/sub%20head/image%20(3).png",
-  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG_20250305_173624.jpg",
-  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG_20200829_130457.jpg",
-  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG_20181027_165451.jpg",
-  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181113-WA0022.jpg",
-  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181106-WA0003.jpg",
-  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181103-WA0135.jpg",
-  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181103-WA0123.jpg",
-  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181031-WA0041.jpg",
-  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20181031-WA0026.jpg",
-  "https://storage.googleapis.com/sasidharstorage/sub%20head/IMG-20180913-WA0029.jpg",
+export const schemeImages: string[] = [
+  "https://storage.googleapis.com/sasidharstorage/schemes/1493313-gas-cyllinder.webp",
+  "https://storage.googleapis.com/sasidharstorage/schemes/1542565-pm-ujjwala-yojana.webp",
+  "https://storage.googleapis.com/sasidharstorage/schemes/25-Lakh-Free-LPG-Connections-with-%E2%82%B9300-Subsidy.webp",
+  "https://storage.googleapis.com/sasidharstorage/schemes/550588364_1088868286749924_949336914067018364_n.jpg",
+  "https://storage.googleapis.com/sasidharstorage/schemes/552257804_1088868290083257_3358908604320363123_n.jpg",
+  "https://storage.googleapis.com/sasidharstorage/schemes/AP-Free-Gas-Cylinder-Booking-2024.webp",
+  "https://storage.googleapis.com/sasidharstorage/schemes/Screenshot%202026-01-23%20192607.png",
+  "https://storage.googleapis.com/sasidharstorage/schemes/andhra-pradesh-gas-cylinder-scheme.webp",
+  "https://storage.googleapis.com/sasidharstorage/schemes/deepamschemeamount_0.avif",
+  "https://storage.googleapis.com/sasidharstorage/schemes/pradhan-mantri-ujjwala-yojana-scheme-details.avif",
+];
+
+export const agencyImages: string[] = [
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG-20180624-WA0011.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG-20180711-WA0006.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG-20180824-WA0003.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG-20180825-WA0008.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG-20180825-WA0012.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG-20180825-WA0022.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG-20180825-WA0034.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG-20180913-WA0029.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG-20181031-WA0026.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG-20181031-WA0041.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG-20181103-WA0123.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG-20181103-WA0135.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG-20181106-WA0003.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG-20181113-WA0022.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG_20180824_081658.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG_20181027_165451.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG_20181222_121010.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG_20190209_163503.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG_20190209_163640.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG_20191123_171652.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG_20200829_130457.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG_20250305_173343.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/IMG_20250305_173624.jpg",
+  "https://storage.googleapis.com/sasidharstorage/middle/SRI_3344.JPG",
+  "https://storage.googleapis.com/sasidharstorage/middle/ai.png",
+  "https://storage.googleapis.com/sasidharstorage/middle/drivers.webp",
+  "https://storage.googleapis.com/sasidharstorage/middle/image%20(3).png",
+  "https://storage.googleapis.com/sasidharstorage/middle/staff.webp",
+];
+
+export const productImages: string[] = [
+  "https://storage.googleapis.com/sasidharstorage/products/120435289_1080297645720284_94431934159470219_n.jpg",
+  "https://storage.googleapis.com/sasidharstorage/products/19kg-hp-lpg-commercial-gas-cylinder-1000x1000.webp",
+  "https://storage.googleapis.com/sasidharstorage/products/1_19.jpg",
+  "https://storage.googleapis.com/sasidharstorage/products/518065166_17988397556829708_5969311771541109093_n.jpg",
+  "https://storage.googleapis.com/sasidharstorage/products/518724999_17988837659829708_3712006312649372710_n.jpg",
+  "https://storage.googleapis.com/sasidharstorage/products/531810792_17992399985829708_7026906141849726201_n.jpg",
+  "https://storage.googleapis.com/sasidharstorage/products/541558014_17994107399829708_1958564444624536788_n.jpg",
+  "https://storage.googleapis.com/sasidharstorage/products/543589502_17994617414829708_6278111146010002928_n.jpg",
+  "https://storage.googleapis.com/sasidharstorage/products/550777593_17996017517829708_3553496675478636286_n.jpg",
+  "https://storage.googleapis.com/sasidharstorage/products/606034564_18007724081829708_6727344626587496602_n.jpg",
+  "https://storage.googleapis.com/sasidharstorage/products/71IK-J6tcqS._SL1500_.jpg",
+  "https://storage.googleapis.com/sasidharstorage/products/FB_IMG_1618830910661.jpg",
+  "https://storage.googleapis.com/sasidharstorage/products/Turbo_1%20(1)_0.jpg",
+  "https://storage.googleapis.com/sasidharstorage/products/butterfly-smart-glass-top-2-burner-gas-stove.jpg",
+  "https://storage.googleapis.com/sasidharstorage/products/pipe%202.png",
+  "https://storage.googleapis.com/sasidharstorage/products/pipe.png",
+  "https://storage.googleapis.com/sasidharstorage/products/stove%202.jpg",
+  "https://storage.googleapis.com/sasidharstorage/products/stove%203.jpg",
+  "https://storage.googleapis.com/sasidharstorage/products/stove%204.jpg",
+  "https://storage.googleapis.com/sasidharstorage/products/stove%205.jpg",
 ];
 
 export const quickActions: QuickActionItem[] = [
@@ -111,11 +160,11 @@ export const quickActions: QuickActionItem[] = [
     topic: "new_connection",
   },
   { icon: "⚠️", labelKey: "tile_complaint", href: null, topic: "complaint" },
-  { icon: "🚚", labelKey: "tile_delivery", href: null, topic: "delivery" },
-  { icon: "🛒", labelKey: "tile_buy", href: "#products", topic: null },
-  { icon: "👥", labelKey: "tile_staff", href: "#staff", topic: null },
-  { icon: "🧯", labelKey: "tile_safety", href: "#safety", topic: null },
-];
+    { icon: "🚚", labelKey: "tile_delivery", href: null, topic: "delivery" },
+    { icon: "🛒", labelKey: "tile_buy", href: "#products", topic: null },
+    { icon: "📞", labelKey: "tile_staff", href: "#staff", topic: null },
+    { icon: "🧯", labelKey: "tile_safety", href: "#safety", topic: null },
+  ];
 
 export const safetyTips: string[] = ["safe_1", "safe_2", "safe_3", "safe_4"];
 
@@ -132,7 +181,7 @@ export const contactInfo: ContactInfo = {
 };
 
 export const HP_LOGO_URL =
-  "https://upload.wikimedia.org/wikipedia/en/thumb/8/87/HP_Gas_Logo.svg/1200px-HP_Gas_Logo.svg.png";
+  "https://storage.googleapis.com/sasidharstorage/Head/logo.webp";
 
 export const PRODUCT_IMAGE_URL =
-  "https://drive.google.com/uc?export=view&id=1r-BNmdTjuaFdNUTQeVcGqp7SIsTil0bJ";
+  "https://storage.googleapis.com/sasidharstorage/products/FB_IMG_1618830910661.jpg";

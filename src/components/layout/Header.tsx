@@ -24,7 +24,7 @@ export const Header: React.FC = () =>
                         className="h-[42px] w-auto"
                     />
                     <div>
-                        Sasidhar Gas <span className="text-[#D31018]">(HP)</span>
+                        Sasidhar Gas Agency <span className="text-[#D31018]">(HP)</span>
                     </div>
                 </div>
 

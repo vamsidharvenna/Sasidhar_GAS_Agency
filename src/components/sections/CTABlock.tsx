@@ -42,7 +42,14 @@ export const CTABlock: React.FC = () =>
                             rel="noopener noreferrer"
                         >
                             <Button variant="whatsapp" fullWidth>
-                                {t( 'btn_wa' )}
+                                <span className="inline-flex items-center justify-center gap-2">
+                                    <img
+                                        src="https://storage.googleapis.com/sasidharstorage/logos/WhatsApp.png"
+                                        alt="WhatsApp"
+                                        className="h-5 w-auto"
+                                    />
+                                    <span>{t( 'btn_wa' )}</span>
+                                </span>
                             </Button>
                         </a>
                     </div>

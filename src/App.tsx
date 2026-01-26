@@ -7,6 +7,7 @@ import { Contact } from './components/sections/Contact';
 import { CTABlock } from './components/sections/CTABlock';
 import { DeliveryInfo } from './components/sections/DeliveryInfo';
 import { HeroSlider } from './components/sections/HeroSlider';
+import { SocialMedia } from './components/sections/SocialMedia';
 import { RefillOptions } from './components/sections/RefillOptions';
 import { Products } from './components/sections/Products';
 import { QuickActions } from './components/sections/QuickActions';
@@ -31,6 +32,7 @@ const App: React.FC = () =>
             </section>
 
             <QuickActions />
+            <SocialMedia />
             <DeliveryInfo />
             <RefillOptions />
             <Products />

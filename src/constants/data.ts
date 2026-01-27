@@ -67,7 +67,7 @@ export const translations: TranslationDict = {
     nav_products: "ఉత్పత్తులు",
     nav_staff: "సిబ్బంది",
     nav_contact: "సంప్రదించండి",
-    hero_title: "ససిధర్ గ్యాస్ ఏజెన్సీ (HP)",
+    hero_title: "శశిధర్ గ్యాస్ ఏజెన్సీ (HP)",
     cta_chat: "సహాయం కోసం చాట్ చేయండి",
     btn_call: "కాల్ చేయండి",
     btn_wa: "వాట్సాప్",

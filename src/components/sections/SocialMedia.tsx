@@ -1,5 +1,6 @@
 import React from 'react';
 import { Section } from '../ui/Section';
+import { useLanguage } from '../../context/LanguageContext';
 import { FaFacebookF, FaTwitter, FaYoutube, FaInstagram, FaExternalLinkAlt } from 'react-icons/fa';
 
 const socials = [
@@ -46,14 +47,16 @@ const socials = [
 ];
 
 export const SocialMedia: React.FC = () => {
+  const { t } = useLanguage();
+
   return (
     <div className="bg-[linear-gradient(180deg,#f8fafc,#ffffff)]">
       <Section id="social-media" className="py-10">
         <div className="max-w-5xl mx-auto text-center px-4">
-          <h2 className="text-3xl text-[#004A99] font-bold">Stay Connected With Us</h2>
-        <p className="text-sm sm:text-base text-[#475569] mt-2 mb-4">
-          Follow Sasidhar Gas Agency for updates and announcements
-        </p>
+          <h2 className="text-3xl text-[#004A99] font-bold">{t('social_title')}</h2>
+          <p className="text-sm sm:text-base text-[#475569] mt-2 mb-4">
+            {t('social_subtitle')}
+          </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {socials.map(({ name, href, Icon, circle, tint, border, focus }) => (

@@ -35,7 +35,7 @@ export const Staff: React.FC = () =>
                     ) )}
                 </div>
 
-                <div>
+                <div className="pt-2 border-t border-[#e5e7eb]">
                     <h4 className="mb-2.5 text-[#666] font-medium">{t( 'delivery_staff' )}</h4>
                     {deliveryStaff.map( ( member ) => (
                         <StaffCard key={`delivery-${ member.phone }`} member={member} />

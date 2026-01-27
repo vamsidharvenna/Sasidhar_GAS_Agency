@@ -38,7 +38,6 @@ export const HeroSlider: React.FC = () => {
     products: 0,
   });
   const [ready, setReady] = useState(false);
-  const [enableRotation, setEnableRotation] = useState(true);
   const [columnPointer, setColumnPointer] = useState(0);
 
   const firstImages = useMemo(
@@ -69,18 +68,9 @@ export const HeroSlider: React.FC = () => {
     };
   }, [firstImages]);
 
-  // Pause rotation on small screens
-  useEffect(() => {
-    const mq = window.matchMedia('(max-width: 639px)');
-    const handler = () => setEnableRotation(!mq.matches);
-    handler();
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
-
   // Sequential rotation: advance one column at a time
   useEffect(() => {
-    if (!ready || !enableRotation) return;
+    if (!ready) return;
 
     const id = window.setInterval(() => {
       setIndexes((prev) => {
@@ -93,7 +83,7 @@ export const HeroSlider: React.FC = () => {
     }, ROTATION_MS);
 
     return () => window.clearInterval(id);
-  }, [ready, enableRotation, columnPointer]);
+  }, [ready, columnPointer]);
 
   if (!ready) {
     return (

@@ -1,0 +1,229 @@
+﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useChat } from '../../context/ChatContext';
+import { contactInfo } from '../../constants/data';
+import { Button } from '../ui/Button';
+import { useLanguage } from '../../context/LanguageContext';
+
+type ChatItem = {
+  from: 'user' | 'bot';
+  text: string;
+};
+
+type ApiItem = {
+  text?: string;
+  chips?: string[];
+};
+
+type ApiResponse = {
+  items?: ApiItem[];
+  messages?: string[];
+  chips?: string[];
+};
+
+export const ChatWidget: React.FC = () => {
+  const { isChatOpen, closeChat } = useChat();
+  const { language } = useLanguage();
+  const API_BASE = useMemo(() => import.meta.env.VITE_DFCX_API_BASE_URL ?? '', []);
+
+  const [sessionId, setSessionId] = useState('');
+  const [input, setInput] = useState('');
+  const [messages, setMessages] = useState<ChatItem[]>([]);
+  const [chips, setChips] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const listRef = useRef<HTMLDivElement>(null);
+  const welcomeSent = useRef(false);
+
+  // On open: new session + single welcome
+  useEffect(() => {
+    if (isChatOpen && !welcomeSent.current) {
+      const newId = typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random()}`;
+      setSessionId(newId);
+      setMessages([]);
+      setChips([]);
+      setInput('');
+      sendEvent('welcome', newId);
+      welcomeSent.current = true;
+    }
+    if (!isChatOpen) {
+      welcomeSent.current = false;
+    }
+  }, [isChatOpen]);
+
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollTop = listRef.current.scrollHeight;
+    }
+  }, [messages, chips, isChatOpen]);
+
+  if (!isChatOpen) return null;
+
+  const endpoint = API_BASE ? `${API_BASE}/api/dfcx/detect-intent` : '';
+
+  const pushMessage = (from: 'user' | 'bot', text: string) => {
+    setMessages((prev) => [...prev, { from, text }]);
+  };
+
+  const processResponse = (data: ApiResponse) => {
+    const items = data.items ?? [];
+    const flatChips = data.chips ?? [];
+
+    items.forEach((item) => {
+      if (item.text) pushMessage('bot', item.text);
+      if (item.chips?.length) setChips(item.chips);
+    });
+
+    if (!items.length && data.messages?.length) {
+      data.messages.forEach((m) => pushMessage('bot', m));
+    }
+
+    if (flatChips.length) setChips(flatChips);
+  };
+
+  const sendEvent = async (eventName: string, sid = sessionId) => {
+    if (!endpoint) return;
+    setLoading(true);
+    setChips([]);
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event: eventName, sessionId: sid, language }),
+      });
+      if (!res.ok) throw new Error('Unable to connect. Please try again.');
+      const data = (await res.json()) as ApiResponse;
+      processResponse(data);
+    } catch (err: any) {
+      pushMessage('bot', err?.message || 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSend = async (textValue?: string) => {
+    const trimmed = (textValue ?? input).trim();
+    if (!trimmed || !endpoint) return;
+
+    pushMessage('user', trimmed);
+    setInput('');
+    setLoading(true);
+    setChips([]);
+
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: trimmed, sessionId, language }),
+      });
+      if (!res.ok) throw new Error('Unable to connect. Please try again.');
+      const data = (await res.json()) as ApiResponse;
+      processResponse(data);
+    } catch (err: any) {
+      pushMessage('bot', err?.message || 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatText = (text: string) => {
+    const parts = text.split(/\s+/);
+    return parts.map((part, idx) => {
+      if (/^https?:\/\//i.test(part)) {
+        return (
+          <a key={idx} href={part} target="_blank" rel="noreferrer" className="text-[#004A99] underline">
+            {part}{' '}
+          </a>
+        );
+      }
+      if (/^\+?\d[\d\-\s()]{8,}$/.test(part)) {
+        const tel = part.replace(/[^\d+]/g, '');
+        return (
+          <a key={idx} href={`tel:${tel}`} className="text-[#004A99] underline">
+            {part}{' '}
+          </a>
+        );
+      }
+      return <span key={idx}>{part} </span>;
+    });
+  };
+
+  const whatsappNumber = contactInfo.whatsappNumber.replace('+', '');
+
+  return (
+    <div className="fixed bottom-20 right-5 w-[320px] max-w-[90vw] h-[440px] bg-white border border-[#d9d9d9] shadow-[0_8px_25px_rgba(0,0,0,0.18)] z-[1001] rounded-[12px] flex flex-col">
+      <div className="bg-[#004A99] text-white py-2.5 px-4 rounded-t-[12px] flex justify-between items-center">
+        <span className="font-semibold">Sasidhar Assistant</span>
+        <button onClick={closeChat} className="text-white cursor-pointer text-lg hover:opacity-80" aria-label="Close chat">
+          ×
+        </button>
+      </div>
+
+      <div ref={listRef} className="flex-grow overflow-y-auto px-3 py-3 space-y-3 text-sm bg-[#f8fafc]">
+        {messages.map((msg, idx) => (
+          <div
+            key={idx}
+            className={`max-w-[85%] rounded-2xl px-3 py-2 ${msg.from === 'user' ? 'bg-[#004A99] text-white ml-auto' : 'bg-white text-[#1f2937] border border-[#e5e7eb]'}`}
+          >
+            {formatText(msg.text)}
+          </div>
+        ))}
+
+        {chips.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {chips.map((chip, i) => (
+              <button
+                key={i}
+                onClick={() => handleSend(chip)}
+                className="px-3 py-1 rounded-full border border-[#004A99] text-[#004A99] text-xs bg-white hover:bg-[#eef4fb] transition"
+              >
+                {chip}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {loading && <div className="text-xs text-[#475569]">Typing...</div>}
+
+        {!endpoint && (
+          <div className="text-xs text-red-600">Chat is not configured. Please set VITE_DFCX_API_BASE_URL.</div>
+        )}
+      </div>
+
+      <div className="px-3 py-3 border-t border-[#e5e7eb] bg-white">
+        <div className="flex gap-2">
+          <input
+            type="text"
+            className="flex-grow rounded-lg border border-[#cbd5e1] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#004A99]/40"
+            placeholder="Type a message"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSend();
+              }
+            }}
+            disabled={loading || !endpoint}
+          />
+          <Button
+            variant="primary"
+            className="px-4"
+            onClick={() => handleSend()}
+            disabled={loading || !endpoint || !input.trim()}
+          >
+            Send
+          </Button>
+        </div>
+        <div className="mt-2 text-[11px] text-[#94a3b8]">
+          Need quick help? WhatsApp:{' '}
+          <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer" className="text-[#004A99] underline">
+            {contactInfo.whatsappNumber}
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+};
+console.log('API:', import.meta.env.VITE_DFCX_API_BASE_URL);
+

@@ -1,103 +1,207 @@
-﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useChat } from '../../context/ChatContext';
-import { contactInfo } from '../../constants/data';
-import { Button } from '../ui/Button';
+﻿import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useChat } from "../../context/ChatContext";
+import { useLanguage } from "../../context/LanguageContext";
+import { contactInfo } from "../../constants/data";
+import { Button } from "../ui/Button";
 
 type ChatItem = {
-  from: 'user' | 'bot';
+  from: "user" | "bot";
   text: string;
+};
+
+type Chip = {
+  text: string;
+  link?: string;
 };
 
 type ApiItem = {
   text?: string;
-  chips?: string[];
+  chips?: Array<string | Chip>;
 };
 
 type ApiResponse = {
   items?: ApiItem[];
   messages?: string[];
-  chips?: string[];
+  chips?: Array<string | Chip>;
+};
+
+const LANG_CHIPS: Chip[] = [
+  { text: "English" },
+  { text: "తెలుగు" },
+];
+
+const normalizeChips = (chips?: Array<string | Chip>): Chip[] => {
+  if (!chips) return [];
+  const dedup = new Map<string, Chip>();
+  chips
+    .map((c) => {
+      if (!c) return null;
+      if (typeof c === "string") return { text: c } as Chip;
+      if (typeof c === "object" && typeof (c as Chip).text === "string") return { text: (c as Chip).text, link: (c as Chip).link };
+      return null;
+    })
+    .filter((c): c is Chip => !!c && !!c.text)
+    .forEach((c) => {
+      if (!dedup.has(c.text)) dedup.set(c.text, c);
+    });
+  return Array.from(dedup.values());
+};
+
+const languageFromChip = (text: string): "en" | "te" | undefined => {
+  const t = text.trim().toLowerCase();
+  if (t === "english" || t === "en") return "en";
+  if (t === "తెలుగు" || t === "telugu" || t === "te") return "te";
+  return undefined;
+};
+
+const fallbackWelcome: Record<string, string> = {
+  en: "Welcome to Sasidhar Gas Agency (HP) support. Please select your language.",
+  te: "Sasidhar Gas Agency (HP) కు స్వాగతం. దయచేసి మీ భాషను ఎంచుకోండి.",
 };
 
 export const ChatWidget: React.FC = () => {
   const { isChatOpen, closeChat } = useChat();
-  const API_BASE = useMemo(() => import.meta.env.VITE_DFCX_API_BASE_URL ?? '', []);
+  const { language, setLanguage } = useLanguage();
+  const API_BASE = useMemo(() => import.meta.env.VITE_DFCX_API_BASE_URL ?? "", []);
 
-  const [sessionId, setSessionId] = useState('');
-  const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<ChatItem[]>([
-    { from: 'bot', text: 'Hello! How can I help you today?' },
-  ]);
-  const [chips, setChips] = useState<string[]>([]);
+  const [sessionId, setSessionId] = useState("");
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<ChatItem[]>([]);
+  const [chips, setChips] = useState<Chip[]>([]);
   const [loading, setLoading] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
 
-  // Reset session each time chat is opened for a fresh conversation
-  useEffect(() => {
-    if (isChatOpen) {
-      const newId = typeof crypto !== 'undefined' && crypto.randomUUID
-        ? crypto.randomUUID()
-        : `${Date.now()}-${Math.random()}`;
-      setSessionId(newId);
-      // also reset conversation state
-      setMessages([{ from: 'bot', text: 'Hello! How can I help you today?' }]);
-      setChips([]);
-      setInput('');
-    }
-  }, [isChatOpen]);
+  const endpoint = API_BASE ? `${API_BASE}/api/dfcx/detect-intent` : "";
 
+  // Scroll to bottom on updates
   useEffect(() => {
     if (listRef.current) {
       listRef.current.scrollTop = listRef.current.scrollHeight;
     }
   }, [messages, chips, isChatOpen]);
 
-  if (!isChatOpen) return null;
+  // When chat opens, start a fresh session and proactively fetch welcome
+  useEffect(() => {
+    if (!isChatOpen) return;
+    const newId =
+      typeof crypto !== "undefined" && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random()}`;
+    setSessionId(newId);
+    setMessages([]);
+    setChips([]);
+    setInput("");
+    void sendWelcome(newId, language);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isChatOpen]);
 
-  const endpoint = API_BASE ? `${API_BASE}/api/dfcx/detect-intent` : '';
+  // If site toggle changes language while chat is open, refresh welcome in same session
+  useEffect(() => {
+    if (!isChatOpen || !sessionId) return;
+    setMessages([]);
+    setChips([]);
+    void sendWelcome(sessionId, language);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
 
-  const pushMessage = (from: 'user' | 'bot', text: string) => {
-    setMessages((prev) => [...prev, { from, text }]);
+  const pushMessage = (from: "user" | "bot", text: string) => {
+    if (!text) return;
+    setMessages((prev) => {
+      if (prev.length && prev[prev.length - 1].from === from && prev[prev.length - 1].text === text) {
+        return prev; // avoid consecutive duplicates
+      }
+      return [...prev, { from, text }];
+    });
+  };
+
+  const processResponse = (data: ApiResponse) => {
+    const chipSet = new Map<string, Chip>();
+
+    if (data?.items?.length) {
+      data.items.forEach((item) => {
+        if (item.text) pushMessage("bot", item.text);
+        normalizeChips(item.chips).forEach((c) => chipSet.set(c.text, c));
+      });
+    } else if (data?.messages?.length) {
+      data.messages.forEach((m) => pushMessage("bot", m));
+    }
+
+    normalizeChips(data?.chips).forEach((c) => chipSet.set(c.text, c));
+
+    setChips(Array.from(chipSet.values()));
+  };
+
+  const sendWelcome = async (sid: string, lang: string) => {
+    setLoading(true);
+    setChips([]);
+    try {
+      if (!endpoint) throw new Error("No backend configured");
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event: "welcome", sessionId: sid, language: lang }),
+      });
+      if (!res.ok) throw new Error("Unable to connect. Please try again.");
+      const data = (await res.json()) as ApiResponse;
+      processResponse(data);
+    } catch (err: any) {
+      // fallback on error
+      pushMessage("bot", fallbackWelcome[lang] ?? fallbackWelcome.en);
+      setChips(LANG_CHIPS);
+      console.warn("welcome failed", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSend = async (textValue?: string) => {
     const trimmed = (textValue ?? input).trim();
     if (!trimmed || !endpoint) return;
 
-    pushMessage('user', trimmed);
-    setInput('');
+    // language chip handling: set language and refresh welcome
+    const langHit = languageFromChip(trimmed);
+    if (langHit) {
+      setLanguage(langHit as "en" | "te");
+      setMessages([]);
+      setChips([]);
+      setInput("");
+      await sendWelcome(sessionId, langHit);
+      return;
+    }
+
+    pushMessage("user", trimmed);
+    setInput("");
     setLoading(true);
     setChips([]);
 
     try {
       const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: trimmed, sessionId }),
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: trimmed, sessionId, language }),
       });
-
-      if (!res.ok) throw new Error('Unable to connect. Please try again.');
+      if (!res.ok) throw new Error("Unable to connect. Please try again.");
       const data = (await res.json()) as ApiResponse;
-
-      const items = data.items ?? [];
-      const flatChips = data.chips ?? [];
-
-      items.forEach((item) => {
-        if (item.text) pushMessage('bot', item.text);
-        if (item.chips && item.chips.length) {
-          setChips(item.chips);
-        }
-      });
-
-      if (flatChips.length) setChips(flatChips);
-      if (!items.length && data.messages?.length) {
-        data.messages.forEach((m) => pushMessage('bot', m));
-      }
+      processResponse(data);
     } catch (err: any) {
-      pushMessage('bot', err?.message || 'Something went wrong. Please try again.');
+      pushMessage("bot", err?.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleChipClick = (chip: Chip) => {
+    if (chip.link) {
+      // Open phone/whatsapp/web links directly instead of sending as text
+      const url = chip.link;
+      if (url.startsWith("tel:") || url.startsWith("mailto:")) {
+        window.location.href = url;
+      } else {
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+      return;
+    }
+    void handleSend(chip.text);
   };
 
   const formatText = (text: string) => {
@@ -105,22 +209,16 @@ export const ChatWidget: React.FC = () => {
     return parts.map((part, idx) => {
       if (/^https?:\/\//i.test(part)) {
         return (
-          <a
-            key={idx}
-            href={part}
-            target="_blank"
-            rel="noreferrer"
-            className="text-[#004A99] underline"
-          >
-            {part}{' '}
+          <a key={idx} href={part} target="_blank" rel="noreferrer" className="text-[#004A99] underline">
+            {part}{" "}
           </a>
         );
       }
       if (/^\+?\d[\d\-\s()]{8,}$/.test(part)) {
-        const tel = part.replace(/[^\d+]/g, '');
+        const tel = part.replace(/[^\d+]/g, "");
         return (
           <a key={idx} href={`tel:${tel}`} className="text-[#004A99] underline">
-            {part}{' '}
+            {part}{" "}
           </a>
         );
       }
@@ -128,17 +226,15 @@ export const ChatWidget: React.FC = () => {
     });
   };
 
-  const whatsappNumber = contactInfo.whatsappNumber.replace('+', '');
+  const whatsappNumber = contactInfo.whatsappNumber.replace("+", "");
+
+  if (!isChatOpen) return null;
 
   return (
     <div className="fixed bottom-20 right-5 w-[320px] max-w-[90vw] h-[440px] bg-white border border-[#d9d9d9] shadow-[0_8px_25px_rgba(0,0,0,0.18)] z-[1001] rounded-[12px] flex flex-col">
       <div className="bg-[#004A99] text-white py-2.5 px-4 rounded-t-[12px] flex justify-between items-center">
         <span className="font-semibold">Sasidhar Assistant</span>
-        <button
-          onClick={closeChat}
-          className="text-white cursor-pointer text-lg hover:opacity-80"
-          aria-label="Close chat"
-        >
+        <button onClick={closeChat} className="text-white cursor-pointer text-lg hover:opacity-80" aria-label="Close chat">
           ×
         </button>
       </div>
@@ -147,8 +243,7 @@ export const ChatWidget: React.FC = () => {
         {messages.map((msg, idx) => (
           <div
             key={idx}
-            className={`max-w-[85%] rounded-2xl px-3 py-2 ${msg.from === 'user' ? 'bg-[#004A99] text-white ml-auto' : 'bg-white text-[#1f2937] border border-[#e5e7eb]'
-              }`}
+            className={`max-w-[85%] rounded-2xl px-3 py-2 ${msg.from === "user" ? "bg-[#004A99] text-white ml-auto" : "bg-white text-[#1f2937] border border-[#e5e7eb]"}`}
           >
             {formatText(msg.text)}
           </div>
@@ -158,24 +253,20 @@ export const ChatWidget: React.FC = () => {
           <div className="flex flex-wrap gap-2">
             {chips.map((chip, i) => (
               <button
-                key={i}
-                onClick={() => handleSend(chip)}
+                key={`${chip.text}-${i}`}
+                onClick={() => handleChipClick(chip)}
                 className="px-3 py-1 rounded-full border border-[#004A99] text-[#004A99] text-xs bg-white hover:bg-[#eef4fb] transition"
               >
-                {chip}
+                {chip.text}
               </button>
             ))}
           </div>
         )}
 
-        {loading && (
-          <div className="text-xs text-[#475569]">Typing...</div>
-        )}
+        {loading && <div className="text-xs text-[#475569]">Typing...</div>}
 
         {!endpoint && (
-          <div className="text-xs text-red-600">
-            Chat is not configured. Please set VITE_DFCX_API_BASE_URL.
-          </div>
+          <div className="text-xs text-red-600">Chat is not configured. Please set VITE_DFCX_API_BASE_URL.</div>
         )}
       </div>
 
@@ -188,7 +279,7 @@ export const ChatWidget: React.FC = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === "Enter") {
                 e.preventDefault();
                 handleSend();
               }
@@ -206,12 +297,7 @@ export const ChatWidget: React.FC = () => {
         </div>
         <div className="mt-2 text-[11px] text-[#94a3b8]">
           Need quick help? WhatsApp:{" "}
-          <a
-            href={`https://wa.me/${whatsappNumber}`}
-            target="_blank"
-            rel="noreferrer"
-            className="text-[#004A99] underline"
-          >
+          <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer" className="text-[#004A99] underline">
             {contactInfo.whatsappNumber}
           </a>
         </div>
@@ -219,5 +305,5 @@ export const ChatWidget: React.FC = () => {
     </div>
   );
 };
-console.log("API:", import.meta.env.VITE_DFCX_API_BASE_URL);
 
+console.log("API:", import.meta.env.VITE_DFCX_API_BASE_URL);

@@ -231,7 +231,7 @@ export const ChatWidget: React.FC = () => {
   if (!isChatOpen) return null;
 
   return (
-    <div className="fixed bottom-20 right-5 w-[320px] max-w-[90vw] h-[440px] bg-white border border-[#d9d9d9] shadow-[0_8px_25px_rgba(0,0,0,0.18)] z-[1001] rounded-[12px] flex flex-col">
+    <div className="fixed right-0 bottom-0 md:right-5 md:bottom-5 w-full md:w-[320px] max-w-[100vw] h-[90vh] md:h-[440px] bg-white border border-[#d9d9d9] shadow-[0_8px_25px_rgba(0,0,0,0.18)] z-[10000] rounded-t-[16px] md:rounded-[12px] flex flex-col">
       <div className="bg-[#004A99] text-white py-2.5 px-4 rounded-t-[12px] flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span className="font-semibold whitespace-nowrap">Sasidhar Assistant</span>

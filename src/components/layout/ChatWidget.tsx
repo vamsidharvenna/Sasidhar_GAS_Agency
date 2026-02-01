@@ -232,11 +232,31 @@ export const ChatWidget: React.FC = () => {
 
   return (
     <div className="fixed bottom-20 right-5 w-[320px] max-w-[90vw] h-[440px] bg-white border border-[#d9d9d9] shadow-[0_8px_25px_rgba(0,0,0,0.18)] z-[1001] rounded-[12px] flex flex-col">
-      <div className="bg-[#004A99] text-white py-2.5 px-4 rounded-t-[12px] flex justify-between items-center">
-        <span className="font-semibold">Sasidhar Assistant</span>
-        <button onClick={closeChat} className="text-white cursor-pointer text-lg hover:opacity-80" aria-label="Close chat">
-          ×
-        </button>
+      <div className="bg-[#004A99] text-white py-2.5 px-4 rounded-t-[12px] flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <span className="font-semibold whitespace-nowrap">Sasidhar Assistant</span>
+          <button
+            onClick={() => setLanguage("en")}
+            className={`px-2 py-1 rounded-full text-xs border ${
+              language === "en" ? "bg-white text-[#004A99] border-white" : "bg-transparent text-white border-white/60"
+            }`}
+          >
+            English
+          </button>
+          <button
+            onClick={() => setLanguage("te")}
+            className={`px-2 py-1 rounded-full text-xs border ${
+              language === "te" ? "bg-white text-[#004A99] border-white" : "bg-transparent text-white border-white/60"
+            }`}
+          >
+            తెలుగు
+          </button>
+        </div>
+        <div className="flex items-center">
+          <button onClick={closeChat} className="text-white cursor-pointer text-lg hover:opacity-80" aria-label="Close chat">
+            ×
+          </button>
+        </div>
       </div>
 
       <div ref={listRef} className="flex-grow overflow-y-auto px-3 py-3 space-y-3 text-sm bg-[#f8fafc]">

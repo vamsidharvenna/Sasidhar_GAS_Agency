@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "../../context/ChatContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { contactInfo } from "../../constants/data";
@@ -91,7 +91,7 @@ export const ChatWidget: React.FC = () => {
     setMessages([]);
     setChips([]);
     setInput("");
-    void sendWelcome(newId, language);
+    void sendWelcome(newId, language, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isChatOpen]);
 
@@ -100,7 +100,8 @@ export const ChatWidget: React.FC = () => {
     if (!isChatOpen || !sessionId) return;
     setMessages([]);
     setChips([]);
-    void sendWelcome(sessionId, language);
+    setInput("");
+    void sendWelcome(sessionId, language, true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 
@@ -131,7 +132,7 @@ export const ChatWidget: React.FC = () => {
     setChips(Array.from(chipSet.values()));
   };
 
-  const sendWelcome = async (sid: string, lang: string) => {
+  const sendWelcome = async (sid: string, lang: string, silentOnError = false) => {
     setLoading(true);
     setChips([]);
     try {
@@ -145,9 +146,11 @@ export const ChatWidget: React.FC = () => {
       const data = (await res.json()) as ApiResponse;
       processResponse(data);
     } catch (err: any) {
-      // fallback on error
-      pushMessage("bot", fallbackWelcome[lang] ?? fallbackWelcome.en);
-      setChips(LANG_CHIPS);
+      if (!silentOnError) {
+        // fallback on error only when not silent
+        pushMessage("bot", fallbackWelcome[lang] ?? fallbackWelcome.en);
+        setChips(LANG_CHIPS);
+      }
       console.warn("welcome failed", err);
     } finally {
       setLoading(false);
@@ -165,7 +168,7 @@ export const ChatWidget: React.FC = () => {
       setMessages([]);
       setChips([]);
       setInput("");
-      await sendWelcome(sessionId, langHit);
+      void sendWelcome(sessionId, langHit, true);
       return;
     }
 
@@ -192,7 +195,6 @@ export const ChatWidget: React.FC = () => {
 
   const handleChipClick = (chip: Chip) => {
     if (chip.link) {
-      // Open phone/whatsapp/web links directly instead of sending as text
       const url = chip.link;
       if (url.startsWith("tel:") || url.startsWith("mailto:")) {
         window.location.href = url;
@@ -236,7 +238,13 @@ export const ChatWidget: React.FC = () => {
         <div className="flex items-center gap-2">
           <span className="font-semibold whitespace-nowrap">Sasidhar Assistant</span>
           <button
-            onClick={() => setLanguage("en")}
+            onClick={() => {
+              setLanguage("en");
+              setMessages([]);
+              setChips([]);
+              setInput("");
+              void sendWelcome(sessionId, "en", true);
+            }}
             className={`px-2 py-1 rounded-full text-xs border ${
               language === "en" ? "bg-white text-[#004A99] border-white" : "bg-transparent text-white border-white/60"
             }`}
@@ -244,7 +252,13 @@ export const ChatWidget: React.FC = () => {
             English
           </button>
           <button
-            onClick={() => setLanguage("te")}
+            onClick={() => {
+              setLanguage("te");
+              setMessages([]);
+              setChips([]);
+              setInput("");
+              void sendWelcome(sessionId, "te", true);
+            }}
             className={`px-2 py-1 rounded-full text-xs border ${
               language === "te" ? "bg-white text-[#004A99] border-white" : "bg-transparent text-white border-white/60"
             }`}
@@ -301,17 +315,12 @@ export const ChatWidget: React.FC = () => {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                handleSend();
+                void handleSend();
               }
             }}
             disabled={loading || !endpoint}
           />
-          <Button
-            variant="primary"
-            className="px-4"
-            onClick={() => handleSend()}
-            disabled={loading || !endpoint || !input.trim()}
-          >
+          <Button variant="primary" className="px-4" onClick={() => void handleSend()} disabled={loading || !endpoint || !input.trim()}>
             Send
           </Button>
         </div>
@@ -325,5 +334,3 @@ export const ChatWidget: React.FC = () => {
     </div>
   );
 };
-
-console.log("API:", import.meta.env.VITE_DFCX_API_BASE_URL);

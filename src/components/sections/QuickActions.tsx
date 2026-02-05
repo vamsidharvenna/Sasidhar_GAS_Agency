@@ -10,7 +10,9 @@ import { Button } from '../ui/Button';
 type FormType = 'new' | 'complaint' | 'delivery' | null;
 
 export const QuickActions: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isTe = language === 'te';
+  const tr = (en: string, te: string) => (isTe ? te : en);
   const { openChat } = useChat();
 
   // Existing Telegram/web-alerts service (DO NOT change this)
@@ -89,13 +91,14 @@ export const QuickActions: React.FC = () => {
     const form = type === 'complaint' ? complaint : newConn;
     const newErrors: Record<string, string> = {};
 
-    if (!form.name.trim()) newErrors.name = 'Please enter your name.';
-    if (!form.phone.trim()) newErrors.phone = 'Please enter your phone number.';
-    else if (!validatePhone(form.phone)) newErrors.phone = 'Phone number should have at least 10 digits.';
-    if (!form.location.trim()) newErrors.location = 'Please enter your location.';
+    if (!form.name.trim()) newErrors.name = tr('Please enter your name.', 'దయచేసి మీ పేరును నమోదు చేయండి.');
+    if (!form.phone.trim()) newErrors.phone = tr('Please enter your phone number.', 'దయచేసి మీ ఫోన్ నంబర్ నమోదు చేయండి.');
+    else if (!validatePhone(form.phone))
+      newErrors.phone = tr('Phone number should have at least 10 digits.', 'ఫోన్ నంబర్‌లో కనీసం 10 అంకెలు ఉండాలి.');
+    if (!form.location.trim()) newErrors.location = tr('Please enter your location.', 'దయచేసి మీ ప్రాంతం / స్థానం నమోదు చేయండి.');
 
     if (type === 'complaint' && !(form as typeof complaint).issue.trim()) {
-      newErrors.issue = 'Please describe your issue.';
+      newErrors.issue = tr('Please describe your issue.', 'దయచేసి మీ సమస్యను వివరించండి.');
     }
 
     setErrors(newErrors);
@@ -108,7 +111,7 @@ export const QuickActions: React.FC = () => {
     if (!isValid) return;
 
     if (!WEB_ALERTS_API_BASE) {
-      setSubmitMessage('Configuration error: VITE_WEB_ALERTS_API_BASE_URL is not set.');
+      setSubmitMessage(tr('Configuration error: VITE_WEB_ALERTS_API_BASE_URL is not set.', 'సెట్టింగ్ లోపం: VITE_WEB_ALERTS_API_BASE_URL ఇవ్వలేదు.'));
       return;
     }
 
@@ -135,8 +138,14 @@ export const QuickActions: React.FC = () => {
       closeModal();
       const message =
         type === 'complaint'
-          ? '✅Thanks for informing us. We received your complaint and will respond shortly.'
-          : '✅ Thanks! We received your request. Our team will call you shortly.';
+          ? tr(
+              '✅ Thanks for informing us. We received your complaint and will respond shortly.',
+              '✅ మాకు తెలియజేసినందుకు ధన్యవాదాలు. మీ ఫిర్యాదు అందుకుంది, త్వరలో సంప్రదిస్తాం.'
+            )
+          : tr(
+              '✅ Thanks! We received your request. Our team will call you shortly.',
+              '✅ ధన్యవాదాలు! మీ అభ్యర్థన అందుకుంది. మా బృందం త్వరలో కాల్ చేస్తుంది.'
+            );
       setConfirmMessage(message);
       setShowConfirm(true);
     } catch (err: any) {
@@ -160,44 +169,44 @@ export const QuickActions: React.FC = () => {
     return (
       <div className="space-y-4">
         <FormField
-          label="Name"
+          label={tr('Name', 'పేరు')}
           name={`${type}-name`}
           value={form.name}
           onChange={(v) => updateField('name', v)}
-          placeholder="Please enter your name"
+          placeholder={tr('Please enter your name', 'దయచేసి మీ పేరును నమోదు చేయండి')}
           required
           error={errors.name}
         />
 
         <FormField
-          label="Phone"
+          label={tr('Phone', 'ఫోన్')}
           name={`${type}-phone`}
           type="tel"
           value={form.phone}
           onChange={(v) => updateField('phone', v)}
-          placeholder="Please enter your phone number"
+          placeholder={tr('Please enter your phone number', 'దయచేసి మీ ఫోన్ నంబర్ నమోదు చేయండి')}
           required
           error={errors.phone}
         />
 
         <FormField
-          label="Location"
+          label={tr('Location', 'ప్రాంతం / స్థానం')}
           name={`${type}-location`}
           value={form.location}
           onChange={(v) => updateField('location', v)}
-          placeholder="Please enter your location"
+          placeholder={tr('Please enter your location', 'దయచేసి మీ ప్రాంతం / స్థానం నమోదు చేయండి')}
           required
           error={errors.location}
         />
 
         {type === 'complaint' && (
           <FormField
-            label="Issue"
+            label={tr('Issue', 'సమస్య')}
             name="issue"
             type="textarea"
             value={complaint.issue}
             onChange={(v) => updateField('issue', v)}
-            placeholder="Please describe your issue"
+            placeholder={tr('Please describe your issue', 'దయచేసి మీ సమస్యను వివరించండి')}
             required
             error={errors.issue}
           />
@@ -220,7 +229,7 @@ export const QuickActions: React.FC = () => {
   const submitDeliveryStatus = async () => {
     const trimmed = area.trim();
     if (!trimmed) {
-      setAreaError('Please enter your area / location.');
+      setAreaError(tr('Please enter your area / location.', 'దయచేసి మీ ప్రాంతం / స్థానం నమోదు చేయండి.'));
       return;
     }
     setAreaError(null);
@@ -228,7 +237,7 @@ export const QuickActions: React.FC = () => {
     if (!DELIVERY_API_BASE) {
       setAreaMessage({
         type: 'error',
-        text: 'Configuration error: VITE_DELIVERY_STATUS_API_BASE_URL is not set.',
+        text: tr('Configuration error: VITE_DELIVERY_STATUS_API_BASE_URL is not set.', 'సెట్టింగ్ లోపం: VITE_DELIVERY_STATUS_API_BASE_URL ఇవ్వలేదు.'),
       });
       return;
     }
@@ -251,9 +260,9 @@ export const QuickActions: React.FC = () => {
         return;
       }
 
-      setAreaMessage({ type: 'success', text: data.message || 'Delivery info not available.' });
+      setAreaMessage({ type: 'success', text: data.message || tr('Delivery info not available.', 'డెలివరీ సమాచారం అందుబాటులో లేదు.') });
     } catch (err: any) {
-      setAreaMessage({ type: 'error', text: err?.message || 'Something went wrong. Please try again.' });
+      setAreaMessage({ type: 'error', text: err?.message || tr('Something went wrong. Please try again.', 'ఏదో తప్పు జరిగింది. దయచేసి మళ్లీ ప్రయత్నించండి.') });
     } finally {
       setAreaLoading(false);
     }
@@ -282,14 +291,14 @@ export const QuickActions: React.FC = () => {
       <Modal
         open={activeForm === 'new'}
         onClose={closeModal}
-        title="New LPG Connection"
+        title={tr('New LPG Connection', 'కొత్త LPG కనెక్షన్')}
         footer={
           <>
             <Button variant="outline" onClick={closeModal} className="min-w-[90px]">
-              Cancel
+              {tr('Cancel', 'రద్దు')}
             </Button>
             <Button onClick={() => submitForm('new')} disabled={submitting} className="min-w-[110px]">
-              {submitting ? 'Sending…' : 'Send'}
+              {submitting ? tr('Sending…', 'పంపిస్తోంది...') : tr('Send', 'పంపించండి')}
             </Button>
           </>
         }
@@ -301,14 +310,14 @@ export const QuickActions: React.FC = () => {
       <Modal
         open={activeForm === 'complaint'}
         onClose={closeModal}
-        title="Complaint / Issue"
+        title={tr('Complaint / Issue', 'ఫిర్యాదు / సమస్య')}
         footer={
           <>
             <Button variant="outline" onClick={closeModal} className="min-w-[90px]">
-              Cancel
+              {tr('Cancel', 'రద్దు')}
             </Button>
             <Button onClick={() => submitForm('complaint')} disabled={submitting} className="min-w-[110px]">
-              {submitting ? 'Sending…' : 'Send'}
+              {submitting ? tr('Sending…', 'పంపిస్తోంది...') : tr('Send', 'పంపించండి')}
             </Button>
           </>
         }
@@ -320,14 +329,14 @@ export const QuickActions: React.FC = () => {
       <Modal
         open={activeForm === 'delivery'}
         onClose={closeModal}
-        title="Delivery Status"
+        title={tr('Delivery Status', 'డెలివరీ స్థితి')}
         footer={
           <>
             <Button variant="outline" onClick={closeModal} className="min-w-[90px]">
-              Cancel
+              {tr('Cancel', 'రద్దు')}
             </Button>
             <Button onClick={submitDeliveryStatus} disabled={areaLoading} className="min-w-[120px]">
-              {areaLoading ? 'Checking…' : 'Check Status'}
+              {areaLoading ? tr('Checking…', 'చూస్తోంది...') : tr('Check Status', 'స్థితి చూడండి')}
             </Button>
           </>
         }
@@ -364,7 +373,7 @@ export const QuickActions: React.FC = () => {
           setShowConfirm(false);
           setConfirmMessage(null);
         }}
-        title="Confirmation"
+        title={tr('Confirmation', 'దృవీకరణ')}
         footer={
           <Button
             variant="outline"
@@ -374,7 +383,7 @@ export const QuickActions: React.FC = () => {
             }}
             className="min-w-[90px]"
           >
-            Cancel
+            {tr('Cancel', 'రద్దు')}
           </Button>
         }
       >

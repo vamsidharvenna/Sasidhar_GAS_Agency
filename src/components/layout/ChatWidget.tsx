@@ -25,10 +25,7 @@ type ApiResponse = {
   chips?: Array<string | Chip>;
 };
 
-const LANG_CHIPS: Chip[] = [
-  { text: "English" },
-  { text: "తెలుగు" },
-];
+const LANG_CHIPS: Chip[] = [{ text: "English" }, { text: "తెలుగు" }];
 
 const normalizeChips = (chips?: Array<string | Chip>): Chip[] => {
   if (!chips) return [];
@@ -54,10 +51,44 @@ const languageFromChip = (text: string): "en" | "te" | undefined => {
   return undefined;
 };
 
-const fallbackWelcome: Record<string, string> = {
-  en: "Welcome to Sasidhar Gas Agency (HP) support. Please select your language.",
-  te: "Sasidhar Gas Agency (HP) కు స్వాగతం. దయచేసి మీ భాషను ఎంచుకోండి.",
+const fallbackPayload: Record<
+  string,
+  {
+    title: string;
+    subtitle: string;
+    chips: string[];
+  }
+> = {
+  en: {
+    title: "Welcome to Sasidhar Gas Agency 👋",
+    subtitle: "I’m here to help you.\nPlease choose one of the options below:",
+    chips: [
+      "🆕 New LPG Connection",
+      "⏰ Office Timing",
+      "📝 Complaint / Issue Registration",
+      "📍 Address & Directions",
+      "📞 Delivery Boy & Staff Contact Details",
+      "🚚 Estimated Delivery by Areas",
+      "🛡️ Safety Guidance",
+    ],
+  },
+  te: {
+    title: "శశిధర్ గ్యాస్ ఏజెన్సీకి స్వాగతం 👋",
+    subtitle: "నేను మీకు సహాయం చేయడానికి ఇక్కడ ఉన్నాను.\nదయచేసి క్రింది ఎంపికలలో ఒకదాన్ని ఎంచుకోండి:",
+    chips: [
+      "🆕 కొత్త LPG గ్యాస్ కనెక్షన్",
+      "⏰ కార్యాలయ సమయం",
+      "🚚 ప్రాంతాల వారీగా డెలివరీ అంచనా",
+      "📝 ఫిర్యాదు / సమస్య నమోదు",
+      "📍 చిరునామా & దిశలు",
+      "📞 డెలివరీ బాయ్ వివరాలు",
+      "🛡️ భద్రతా మార్గదర్శకాలు",
+    ],
+  },
 };
+
+
+
 
 export const ChatWidget: React.FC = () => {
   const { isChatOpen, closeChat } = useChat();
@@ -95,16 +126,6 @@ export const ChatWidget: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isChatOpen]);
 
-  // If site toggle changes language while chat is open, refresh welcome in same session
-  useEffect(() => {
-    if (!isChatOpen || !sessionId) return;
-    setMessages([]);
-    setChips([]);
-    setInput("");
-    void sendWelcome(sessionId, language, true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [language]);
-
   const pushMessage = (from: "user" | "bot", text: string) => {
     if (!text) return;
     setMessages((prev) => {
@@ -132,6 +153,16 @@ export const ChatWidget: React.FC = () => {
     setChips(Array.from(chipSet.values()));
   };
 
+  const changeLanguage = async (lang: "en" | "te") => {
+    setLanguage(lang);
+    setMessages([]);
+    setChips([]);
+    setInput("");
+    if (sessionId) {
+      await sendWelcome(sessionId, lang, false);
+    }
+  };
+
   const sendWelcome = async (sid: string, lang: string, silentOnError = false) => {
     setLoading(true);
     setChips([]);
@@ -148,8 +179,10 @@ export const ChatWidget: React.FC = () => {
     } catch (err: any) {
       if (!silentOnError) {
         // fallback on error only when not silent
-        pushMessage("bot", fallbackWelcome[lang] ?? fallbackWelcome.en);
-        setChips(LANG_CHIPS);
+        const payload = fallbackPayload[lang] ?? fallbackPayload.en;
+        pushMessage("bot", `${payload.title}
+${payload.subtitle}`);
+        setChips(payload.chips.map((text) => ({ text })));
       }
       console.warn("welcome failed", err);
     } finally {
@@ -164,11 +197,8 @@ export const ChatWidget: React.FC = () => {
     // language chip handling: set language and refresh welcome
     const langHit = languageFromChip(trimmed);
     if (langHit) {
-      setLanguage(langHit as "en" | "te");
-      setMessages([]);
-      setChips([]);
+      await changeLanguage(langHit as "en" | "te");
       setInput("");
-      void sendWelcome(sessionId, langHit, true);
       return;
     }
 
@@ -239,11 +269,7 @@ export const ChatWidget: React.FC = () => {
           <span className="font-semibold whitespace-nowrap">Sasidhar Assistant</span>
           <button
             onClick={() => {
-              setLanguage("en");
-              setMessages([]);
-              setChips([]);
-              setInput("");
-              void sendWelcome(sessionId, "en", true);
+              void changeLanguage("en");
             }}
             className={`px-2 py-1 rounded-full text-xs border ${
               language === "en" ? "bg-white text-[#004A99] border-white" : "bg-transparent text-white border-white/60"
@@ -253,11 +279,7 @@ export const ChatWidget: React.FC = () => {
           </button>
           <button
             onClick={() => {
-              setLanguage("te");
-              setMessages([]);
-              setChips([]);
-              setInput("");
-              void sendWelcome(sessionId, "te", true);
+              void changeLanguage("te");
             }}
             className={`px-2 py-1 rounded-full text-xs border ${
               language === "te" ? "bg-white text-[#004A99] border-white" : "bg-transparent text-white border-white/60"

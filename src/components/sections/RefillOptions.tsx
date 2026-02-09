@@ -1,7 +1,7 @@
 import React from 'react';
 import { Section } from '../ui/Section';
 import { useLanguage } from '../../context/LanguageContext';
-import { FaMobileAlt, FaWhatsapp, FaPhoneAlt, FaListUl, FaGooglePlay, FaApple } from 'react-icons/fa';
+import { FaWhatsapp, FaPhoneAlt, FaListUl, FaGooglePlay, FaApple } from 'react-icons/fa';
 
 export const RefillOptions: React.FC = () => {
   const { t } = useLanguage();
@@ -20,9 +20,11 @@ export const RefillOptions: React.FC = () => {
         {/* HP Pay Mobile App */}
         <div className="bg-white rounded-xl border border-[#e5e7eb] shadow-[0_4px_12px_rgba(0,0,0,0.06)] p-4 flex flex-col gap-2 hover:-translate-y-[3px] hover:shadow-[0_8px_16px_rgba(0,0,0,0.10)] transition duration-200">
           <div className="flex items-center gap-3">
-            <div className="h-11 w-11 rounded-full bg-[#004A99] flex items-center justify-center text-white">
-              <FaMobileAlt className="h-5 w-5" />
-            </div>
+            <img
+              src="https://storage.googleapis.com/sasidharstorage/logos/HP%20PAY%20LOGO.webp"
+              alt="HP Pay"
+              className="h-11 w-11 rounded-full object-contain border border-[#e5e7eb]"
+            />
             <div>
               <h3 className="text-base font-semibold text-[#0f172a]">{t('refill_card1_title')}</h3>
               <p className="text-xs text-[#6b7280]">{t('refill_card1_sub')}</p>

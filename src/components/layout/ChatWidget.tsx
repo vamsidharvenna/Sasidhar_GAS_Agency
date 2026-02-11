@@ -4,6 +4,8 @@ import { useLanguage } from "../../context/LanguageContext";
 import { contactInfo } from "../../constants/data";
 import { Button } from "../ui/Button";
 
+type Lang = "en" | "te";
+
 type ChatItem = {
   from: "user" | "bot";
   text: string;
@@ -19,46 +21,26 @@ type ApiItem = {
   chips?: Array<string | Chip>;
 };
 
+type RichContentBlock = {
+  type?: string;
+  title?: string;
+  subtitle?: string;
+  options?: Array<string | Chip>;
+};
+
 type ApiResponse = {
   items?: ApiItem[];
   messages?: string[];
   chips?: Array<string | Chip>;
+  richContent?: RichContentBlock[][];
 };
 
-const LANG_CHIPS: Chip[] = [{ text: "English" }, { text: "తెలుగు" }];
-
-const normalizeChips = (chips?: Array<string | Chip>): Chip[] => {
-  if (!chips) return [];
-  const dedup = new Map<string, Chip>();
-  chips
-    .map((c) => {
-      if (!c) return null;
-      if (typeof c === "string") return { text: c } as Chip;
-      if (typeof c === "object" && typeof (c as Chip).text === "string") return { text: (c as Chip).text, link: (c as Chip).link };
-      return null;
-    })
-    .filter((c): c is Chip => !!c && !!c.text)
-    .forEach((c) => {
-      if (!dedup.has(c.text)) dedup.set(c.text, c);
-    });
-  return Array.from(dedup.values());
+type ParsedResponse = {
+  messages: string[];
+  chips: Chip[];
 };
 
-const languageFromChip = (text: string): "en" | "te" | undefined => {
-  const t = text.trim().toLowerCase();
-  if (t === "english" || t === "en") return "en";
-  if (t === "తెలుగు" || t === "telugu" || t === "te") return "te";
-  return undefined;
-};
-
-const fallbackPayload: Record<
-  string,
-  {
-    title: string;
-    subtitle: string;
-    chips: string[];
-  }
-> = {
+const welcomePayload: Record<Lang, { title: string; subtitle: string; chips: string[] }> = {
   en: {
     title: "Welcome to Sasidhar Gas Agency 👋",
     subtitle: "I’m here to help you.\nPlease choose one of the options below:",
@@ -87,8 +69,32 @@ const fallbackPayload: Record<
   },
 };
 
+const normalizeChip = (value: unknown): Chip | null => {
+  if (typeof value === "string") {
+    const text = value.trim();
+    return text ? { text } : null;
+  }
 
+  if (value && typeof value === "object") {
+    const text = typeof (value as Chip).text === "string" ? (value as Chip).text.trim() : "";
+    if (!text) return null;
+    const link = typeof (value as Chip).link === "string" ? (value as Chip).link : undefined;
+    return { text, link };
+  }
 
+  return null;
+};
+
+const languageFromChip = (text: string): Lang | undefined => {
+  const t = text.trim().toLowerCase();
+  if (t === "english" || t === "en") return "en";
+  if (t === "telugu" || t === "te" || t === "తెలుగు") return "te";
+  return undefined;
+};
+
+const isContentEmpty = (content: ParsedResponse): boolean => {
+  return content.messages.length === 0 && content.chips.length === 0;
+};
 
 export const ChatWidget: React.FC = () => {
   const { isChatOpen, closeChat } = useChat();
@@ -104,68 +110,100 @@ export const ChatWidget: React.FC = () => {
 
   const endpoint = API_BASE ? `${API_BASE}/api/dfcx/detect-intent` : "";
 
-  // Scroll to bottom on updates
-  useEffect(() => {
-    if (listRef.current) {
-      listRef.current.scrollTop = listRef.current.scrollHeight;
-    }
-  }, [messages, chips, isChatOpen]);
-
-  // When chat opens, start a fresh session and proactively fetch welcome
-  useEffect(() => {
-    if (!isChatOpen) return;
-    const newId =
-      typeof crypto !== "undefined" && crypto.randomUUID
-        ? crypto.randomUUID()
-        : `${Date.now()}-${Math.random()}`;
-    setSessionId(newId);
-    setMessages([]);
-    setChips([]);
-    setInput("");
-    void sendWelcome(newId, language, false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isChatOpen]);
-
   const pushMessage = (from: "user" | "bot", text: string) => {
     if (!text) return;
     setMessages((prev) => {
       if (prev.length && prev[prev.length - 1].from === from && prev[prev.length - 1].text === text) {
-        return prev; // avoid consecutive duplicates
+        return prev;
       }
       return [...prev, { from, text }];
     });
   };
 
-  const processResponse = (data: ApiResponse) => {
-    const chipSet = new Map<string, Chip>();
+  const extractResponseContent = (data: ApiResponse): ParsedResponse => {
+    const messagesOut: string[] = [];
+    const messageSet = new Set<string>();
+    const chipMap = new Map<string, Chip>();
 
-    if (data?.items?.length) {
+    const addMessage = (value: unknown) => {
+      if (typeof value !== "string") return;
+      const text = value.trim();
+      if (!text || messageSet.has(text)) return;
+      messageSet.add(text);
+      messagesOut.push(text);
+    };
+
+    const addChip = (value: unknown) => {
+      const chip = normalizeChip(value);
+      if (!chip) return;
+      const key = `${chip.text}::${chip.link ?? ""}`;
+      if (!chipMap.has(key)) chipMap.set(key, chip);
+    };
+
+    if (Array.isArray(data.items)) {
       data.items.forEach((item) => {
-        if (item.text) pushMessage("bot", item.text);
-        normalizeChips(item.chips).forEach((c) => chipSet.set(c.text, c));
+        addMessage(item?.text);
+        if (Array.isArray(item?.chips)) item.chips.forEach(addChip);
       });
-    } else if (data?.messages?.length) {
-      data.messages.forEach((m) => pushMessage("bot", m));
     }
 
-    normalizeChips(data?.chips).forEach((c) => chipSet.set(c.text, c));
-
-    setChips(Array.from(chipSet.values()));
-  };
-
-  const changeLanguage = async (lang: "en" | "te") => {
-    setLanguage(lang);
-    setMessages([]);
-    setChips([]);
-    setInput("");
-    if (sessionId) {
-      await sendWelcome(sessionId, lang, false);
+    if (Array.isArray(data.messages)) {
+      data.messages.forEach(addMessage);
     }
+
+    if (Array.isArray(data.richContent)) {
+      data.richContent.forEach((row) => {
+        if (!Array.isArray(row)) return;
+        row.forEach((block) => {
+          if (!block || typeof block !== "object") return;
+          const type = typeof block.type === "string" ? block.type.toLowerCase() : "";
+
+          if (type === "info" || typeof block.title === "string" || typeof block.subtitle === "string") {
+            const parts = [block.title, block.subtitle]
+              .filter((p): p is string => typeof p === "string")
+              .map((p) => p.trim())
+              .filter(Boolean);
+            if (parts.length) addMessage(parts.join("\n"));
+          }
+
+          if (type === "chips" && Array.isArray(block.options)) {
+            block.options.forEach(addChip);
+          }
+        });
+      });
+    }
+
+    if (Array.isArray(data.chips)) {
+      data.chips.forEach(addChip);
+    }
+
+    return { messages: messagesOut, chips: Array.from(chipMap.values()) };
   };
 
-  const sendWelcome = async (sid: string, lang: string, silentOnError = false) => {
+  const applyLocalWelcome = (lang: Lang) => {
+    const payload = welcomePayload[lang];
+    setMessages([{ from: "bot", text: `${payload.title}\n${payload.subtitle}` }]);
+    setChips(payload.chips.map((text) => ({ text })));
+  };
+
+  const applyWelcomeContent = (content: ParsedResponse, lang: Lang) => {
+    if (isContentEmpty(content)) {
+      applyLocalWelcome(lang);
+      return;
+    }
+
+    const fallback = welcomePayload[lang];
+    const fallbackMessage = `${fallback.title}\n${fallback.subtitle}`;
+
+    const mergedMessages = content.messages.length ? content.messages : [fallbackMessage];
+    const mergedChips = content.chips.length ? content.chips : fallback.chips.map((text) => ({ text }));
+
+    setMessages(mergedMessages.map((text) => ({ from: "bot" as const, text })));
+    setChips(mergedChips);
+  };
+
+  const sendWelcome = async (sid: string, lang: Lang, silentOnError = false) => {
     setLoading(true);
-    setChips([]);
     try {
       if (!endpoint) throw new Error("No backend configured");
       const res = await fetch(endpoint, {
@@ -173,34 +211,70 @@ export const ChatWidget: React.FC = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ event: "welcome", sessionId: sid, language: lang }),
       });
+
       if (!res.ok) throw new Error("Unable to connect. Please try again.");
       const data = (await res.json()) as ApiResponse;
-      processResponse(data);
-    } catch (err: any) {
-      if (!silentOnError) {
-        // fallback on error only when not silent
-        const payload = fallbackPayload[lang] ?? fallbackPayload.en;
-        pushMessage("bot", `${payload.title}
-${payload.subtitle}`);
-        setChips(payload.chips.map((text) => ({ text })));
-      }
+      const content = extractResponseContent(data);
+      applyWelcomeContent(content, lang);
+    } catch (err) {
+      if (!silentOnError) applyLocalWelcome(lang);
       console.warn("welcome failed", err);
     } finally {
       setLoading(false);
     }
   };
 
+  const changeLanguage = async (lang: Lang) => {
+    setLanguage(lang);
+    setInput("");
+    applyLocalWelcome(lang);
+
+    if (sessionId) {
+      await sendWelcome(sessionId, lang, true);
+      return;
+    }
+
+    const newId =
+      typeof crypto !== "undefined" && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random()}`;
+    setSessionId(newId);
+    await sendWelcome(newId, lang, true);
+  };
+
+  // Scroll to bottom on updates
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollTop = listRef.current.scrollHeight;
+    }
+  }, [messages, chips, isChatOpen]);
+
+  // When chat opens, start a fresh session and show welcome immediately.
+  useEffect(() => {
+    if (!isChatOpen) return;
+    const newId =
+      typeof crypto !== "undefined" && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random()}`;
+    setSessionId(newId);
+    setInput("");
+    applyLocalWelcome(language as Lang);
+    void sendWelcome(newId, language as Lang, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isChatOpen]);
+
   const handleSend = async (textValue?: string) => {
     const trimmed = (textValue ?? input).trim();
-    if (!trimmed || !endpoint) return;
+    if (!trimmed) return;
 
-    // language chip handling: set language and refresh welcome
     const langHit = languageFromChip(trimmed);
     if (langHit) {
-      await changeLanguage(langHit as "en" | "te");
+      await changeLanguage(langHit);
       setInput("");
       return;
     }
+
+    if (!endpoint) return;
 
     pushMessage("user", trimmed);
     setInput("");
@@ -215,15 +289,25 @@ ${payload.subtitle}`);
       });
       if (!res.ok) throw new Error("Unable to connect. Please try again.");
       const data = (await res.json()) as ApiResponse;
-      processResponse(data);
-    } catch (err: any) {
-      pushMessage("bot", err?.message || "Something went wrong. Please try again.");
+      const content = extractResponseContent(data);
+
+      content.messages.forEach((text) => pushMessage("bot", text));
+      setChips(content.chips);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      pushMessage("bot", message);
     } finally {
       setLoading(false);
     }
   };
 
   const handleChipClick = (chip: Chip) => {
+    const langHit = languageFromChip(chip.text);
+    if (langHit) {
+      void changeLanguage(langHit);
+      return;
+    }
+
     if (chip.link) {
       const url = chip.link;
       if (url.startsWith("tel:") || url.startsWith("mailto:")) {
@@ -233,28 +317,38 @@ ${payload.subtitle}`);
       }
       return;
     }
+
     void handleSend(chip.text);
   };
 
   const formatText = (text: string) => {
-    const parts = text.split(/\s+/);
-    return parts.map((part, idx) => {
-      if (/^https?:\/\//i.test(part)) {
-        return (
-          <a key={idx} href={part} target="_blank" rel="noreferrer" className="text-[#004A99] underline">
-            {part}{" "}
-          </a>
-        );
-      }
-      if (/^\+?\d[\d\-\s()]{8,}$/.test(part)) {
-        const tel = part.replace(/[^\d+]/g, "");
-        return (
-          <a key={idx} href={`tel:${tel}`} className="text-[#004A99] underline">
-            {part}{" "}
-          </a>
-        );
-      }
-      return <span key={idx}>{part} </span>;
+    const lines = text.split("\n");
+    return lines.map((line, lineIndex) => {
+      const parts = line.trim() ? line.split(/\s+/) : [""];
+      return (
+        <React.Fragment key={`line-${lineIndex}`}>
+          {parts.map((part, partIndex) => {
+            if (!part) return null;
+            if (/^https?:\/\//i.test(part)) {
+              return (
+                <a key={`url-${lineIndex}-${partIndex}`} href={part} target="_blank" rel="noreferrer" className="text-[#004A99] underline">
+                  {part}{" "}
+                </a>
+              );
+            }
+            if (/^\+?\d[\d\-\s()]{8,}$/.test(part)) {
+              const tel = part.replace(/[^\d+]/g, "");
+              return (
+                <a key={`tel-${lineIndex}-${partIndex}`} href={`tel:${tel}`} className="text-[#004A99] underline">
+                  {part}{" "}
+                </a>
+              );
+            }
+            return <span key={`txt-${lineIndex}-${partIndex}`}>{part} </span>;
+          })}
+          {lineIndex < lines.length - 1 && <br />}
+        </React.Fragment>
+      );
     });
   };
 
@@ -295,11 +389,13 @@ ${payload.subtitle}`);
         </div>
       </div>
 
-      <div ref={listRef} className="flex-grow overflow-y-auto px-3 py-3 space-y-3 text-sm bg-[#f8fafc]">
+      <div ref={listRef} className="flex-grow overflow-y-auto overflow-x-hidden px-3 py-3 space-y-3 text-sm bg-[#f8fafc]">
         {messages.map((msg, idx) => (
           <div
             key={idx}
-            className={`max-w-[85%] rounded-2xl px-3 py-2 ${msg.from === "user" ? "bg-[#004A99] text-white ml-auto" : "bg-white text-[#1f2937] border border-[#e5e7eb]"}`}
+            className={`max-w-[85%] rounded-2xl px-3 py-2 break-words ${
+              msg.from === "user" ? "bg-[#004A99] text-white ml-auto" : "bg-white text-[#1f2937] border border-[#e5e7eb]"
+            }`}
           >
             {formatText(msg.text)}
           </div>
@@ -321,9 +417,7 @@ ${payload.subtitle}`);
 
         {loading && <div className="text-xs text-[#475569]">Typing...</div>}
 
-        {!endpoint && (
-          <div className="text-xs text-red-600">Chat is not configured. Please set VITE_DFCX_API_BASE_URL.</div>
-        )}
+        {!endpoint && <div className="text-xs text-red-600">Chat is not configured. Please set VITE_DFCX_API_BASE_URL.</div>}
       </div>
 
       <div className="px-3 py-3 border-t border-[#e5e7eb] bg-white">

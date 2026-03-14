@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "../../context/ChatContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { contactInfo } from "../../constants/data";
+import { trackGAEvent, trackGALinkInteraction } from "../../lib/googleAnalytics";
+import { trackMetaCustomEvent, trackMetaLinkInteraction } from "../../lib/metaPixel";
 import { Button } from "../ui/Button";
 
 type Lang = "en" | "te";
@@ -276,6 +278,15 @@ export const ChatWidget: React.FC = () => {
 
     if (!endpoint) return;
 
+    trackGAEvent("assistant_message_send", {
+      ui_location: "chat_widget",
+      message_type: textValue ? "quick_reply" : "free_text",
+    });
+    trackMetaCustomEvent("AssistantMessageSent", {
+      source: "chat_widget",
+      content_category: textValue ? "quick_reply" : "free_text",
+    });
+
     pushMessage("user", trimmed);
     setInput("");
     setLoading(true);
@@ -310,6 +321,14 @@ export const ChatWidget: React.FC = () => {
 
     if (chip.link) {
       const url = chip.link;
+      trackGALinkInteraction(url, {
+        ui_location: "chat_widget",
+        content_id: "assistant_link",
+      });
+      trackMetaLinkInteraction(url, {
+        source: "chat_widget",
+        content_name: "assistant_link",
+      });
       if (url.startsWith("tel:") || url.startsWith("mailto:")) {
         window.location.href = url;
       } else {
@@ -442,7 +461,20 @@ export const ChatWidget: React.FC = () => {
         </div>
         <div className="mt-2 text-[11px] text-[#94a3b8]">
           Need quick help? WhatsApp:{" "}
-          <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer" className="text-[#004A99] underline">
+          <a
+            href={`https://wa.me/${whatsappNumber}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-[#004A99] underline"
+            data-ga-ui-location="chat_widget"
+            data-ga-content-id="quick_help_whatsapp"
+            data-ga-label="quick_help_whatsapp"
+            data-meta-source="chat_widget"
+            data-meta-name="quick_help_whatsapp"
+            data-meta-category="contact"
+            data-meta-label="quick_help_whatsapp"
+            data-meta-contact-method="whatsapp"
+          >
             {contactInfo.whatsappNumber}
           </a>
         </div>

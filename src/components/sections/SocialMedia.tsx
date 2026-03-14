@@ -65,6 +65,14 @@ export const SocialMedia: React.FC = () => {
                 href={href}
                 target="_blank"
                 rel="noreferrer"
+                data-ga-ui-location="social_section"
+                data-ga-content-id="social_profile"
+                data-ga-social-network={name.toLowerCase()}
+                data-ga-label={name}
+                data-meta-source="social_section"
+                data-meta-name="social_profile"
+                data-meta-category="social"
+                data-meta-label={name}
               className={`group relative w-full bg-white rounded-[14px] border border-[#e5e7eb] shadow-[0_2px_8px_rgba(0,0,0,0.05)] px-4 py-3 flex flex-col items-center transition duration-200 hover:-translate-y-[4px] hover:shadow-[0_8px_16px_rgba(0,0,0,0.10)] focus:outline-none focus:ring-2 ${focus} ${tint} ${border}`}
             >
                 <FaExternalLinkAlt className="absolute right-3 top-3 text-[#94a3b8] opacity-0 text-xs transition duration-200 group-hover:opacity-90 group-focus-visible:opacity-90" />

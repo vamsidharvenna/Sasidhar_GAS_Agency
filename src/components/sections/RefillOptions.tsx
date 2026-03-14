@@ -36,6 +36,13 @@ export const RefillOptions: React.FC = () => {
               target="_blank"
               rel="noreferrer"
               className="text-[#004A99] underline hover:text-[#003366] text-sm flex items-center gap-1.5"
+              data-ga-ui-location="refill_section"
+              data-ga-content-id="hp_pay_play_store"
+              data-ga-label="hp_pay"
+              data-meta-source="refill_section"
+              data-meta-name="hp_pay_play_store"
+              data-meta-category="refill_app"
+              data-meta-label="hp_pay"
             >
               <FaGooglePlay className="h-4 w-4" />
               <span>Play Store</span>
@@ -45,6 +52,13 @@ export const RefillOptions: React.FC = () => {
               target="_blank"
               rel="noreferrer"
               className="text-[#004A99] underline hover:text-[#003366] text-sm flex items-center gap-1.5"
+              data-ga-ui-location="refill_section"
+              data-ga-content-id="hp_pay_app_store"
+              data-ga-label="hp_pay"
+              data-meta-source="refill_section"
+              data-meta-name="hp_pay_app_store"
+              data-meta-category="refill_app"
+              data-meta-label="hp_pay"
             >
               <FaApple className="h-4 w-4" />
               <span>App Store</span>
@@ -58,6 +72,14 @@ export const RefillOptions: React.FC = () => {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Open WhatsApp booking chat"
+          data-ga-ui-location="refill_section"
+          data-ga-content-id="hp_whatsapp_booking"
+          data-ga-label="official_booking_whatsapp"
+          data-meta-source="refill_section"
+          data-meta-name="hp_whatsapp_booking"
+          data-meta-category="refill_booking"
+          data-meta-label="official_booking_whatsapp"
+          data-meta-contact-method="whatsapp"
           className="bg-white rounded-xl border border-[#e5e7eb] shadow-[0_4px_12px_rgba(0,0,0,0.06)] p-4 flex flex-col gap-2 hover:-translate-y-[3px] hover:shadow-[0_8px_16px_rgba(0,0,0,0.10)] transition duration-200 cursor-pointer"
         >
           <div className="flex items-center gap-3">
@@ -83,6 +105,14 @@ export const RefillOptions: React.FC = () => {
         <a
           href="tel:8888823456"
           aria-label="Call HP ANY Time IVRS"
+          data-ga-ui-location="refill_section"
+          data-ga-content-id="hp_any_time_ivrs"
+          data-ga-label="official_booking_call"
+          data-meta-source="refill_section"
+          data-meta-name="hp_any_time_ivrs"
+          data-meta-category="refill_booking"
+          data-meta-label="official_booking_call"
+          data-meta-contact-method="phone"
           className="bg-white rounded-xl border border-[#e5e7eb] shadow-[0_4px_12px_rgba(0,0,0,0.06)] p-4 flex flex-col gap-2 hover:-translate-y-[3px] hover:shadow-[0_8px_16px_rgba(0,0,0,0.10)] transition duration-200 cursor-pointer"
         >
           <div className="flex items-center gap-3">
@@ -120,6 +150,13 @@ export const RefillOptions: React.FC = () => {
               target="_blank"
               rel="noreferrer"
               className="text-[#004A99] underline hover:text-[#003366] ml-1 inline-flex items-center gap-1.5"
+              data-ga-ui-location="refill_section"
+              data-ga-content-id="umang_play_store"
+              data-ga-label="umang"
+              data-meta-source="refill_section"
+              data-meta-name="umang_play_store"
+              data-meta-category="refill_app"
+              data-meta-label="umang"
             >
               <FaGooglePlay className="h-4 w-4" />
               <span>Play Store</span>
@@ -130,6 +167,13 @@ export const RefillOptions: React.FC = () => {
               target="_blank"
               rel="noreferrer"
               className="text-[#004A99] underline hover:text-[#003366] inline-flex items-center gap-1.5"
+              data-ga-ui-location="refill_section"
+              data-ga-content-id="umang_app_store"
+              data-ga-label="umang"
+              data-meta-source="refill_section"
+              data-meta-name="umang_app_store"
+              data-meta-category="refill_app"
+              data-meta-label="umang"
             >
               <FaApple className="h-4 w-4" />
               <span>App Store</span>
@@ -146,6 +190,14 @@ export const RefillOptions: React.FC = () => {
             <a
               href="tel:+918649255551"
               className="text-[#004A99] underline hover:text-[#003366] inline-flex items-center gap-1"
+              data-ga-ui-location="refill_section"
+              data-ga-content-id="distributor_call"
+              data-ga-label="agency_call"
+              data-meta-source="refill_section"
+              data-meta-name="distributor_call"
+              data-meta-category="refill_booking"
+              data-meta-label="agency_call"
+              data-meta-contact-method="phone"
             >
               📞 +91 8649255551
             </a>

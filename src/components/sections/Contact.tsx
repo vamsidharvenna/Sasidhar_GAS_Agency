@@ -27,6 +27,13 @@ export const Contact: React.FC = () =>
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block mb-3"
+                data-ga-ui-location="contact_section"
+                data-ga-content-id="get_directions"
+                data-ga-label="agency_directions"
+                data-meta-source="contact_section"
+                data-meta-name="get_directions"
+                data-meta-category="location"
+                data-meta-label="agency_directions"
             >
                 <Button variant="outline" fullWidth>
                     📍 Get Directions
@@ -36,6 +43,14 @@ export const Contact: React.FC = () =>
             <a
                 href={`tel:${ contactInfo.officeNumber }`}
                 className="block mb-3"
+                data-ga-ui-location="contact_section"
+                data-ga-content-id="office_call"
+                data-ga-label="office_phone"
+                data-meta-source="contact_section"
+                data-meta-name="office_call"
+                data-meta-category="contact"
+                data-meta-label="office_phone"
+                data-meta-contact-method="phone"
             >
                 <Button variant="primary" fullWidth>
                     📞 Office: 08649-255551
@@ -47,6 +62,14 @@ export const Contact: React.FC = () =>
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block"
+                data-ga-ui-location="contact_section"
+                data-ga-content-id="office_whatsapp"
+                data-ga-label="office_whatsapp"
+                data-meta-source="contact_section"
+                data-meta-name="office_whatsapp"
+                data-meta-category="contact"
+                data-meta-label="office_whatsapp"
+                data-meta-contact-method="whatsapp"
             >
                 <Button variant="whatsapp" fullWidth>
                     🟢 Mobile/WA: +91 98661 95074

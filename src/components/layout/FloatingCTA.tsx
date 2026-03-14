@@ -39,6 +39,16 @@ export const FloatingCTA: React.FC = () => {
         className="relative focus:outline-none"
         aria-label="Open chat"
         style={{ background: 'transparent', boxShadow: 'none' }}
+        data-ga-event="working_lead"
+        data-ga-lead-status="chat_opened"
+        data-ga-contact-method="chat"
+        data-ga-ui-location="floating_cta"
+        data-ga-content-id="chat_assistant"
+        data-meta-standard-event="Contact"
+        data-meta-source="floating_cta"
+        data-meta-name="chat_assistant"
+        data-meta-category="support"
+        data-meta-contact-method="chat"
       >
         <img
           src={AVATAR_SRC}

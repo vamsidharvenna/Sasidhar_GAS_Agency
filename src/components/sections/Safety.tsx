@@ -85,7 +85,18 @@ export const Safety: React.FC = () => {
               {emergencyTitle}
             </p>
             <p className="text-base text-slate-800">{emergencyDesc}</p>
-            <a href={`tel:${emergencyNumber}`} aria-label="Call fire station">
+            <a
+              href={`tel:${emergencyNumber}`}
+              aria-label="Call fire station"
+              data-ga-ui-location="safety_section"
+              data-ga-content-id="fire_station_emergency"
+              data-ga-label="emergency_call"
+              data-meta-source="safety_section"
+              data-meta-name="fire_station_emergency"
+              data-meta-category="emergency"
+              data-meta-label="emergency_call"
+              data-meta-contact-method="phone"
+            >
               <Button
                 variant="secondary"
                 fullWidth
@@ -113,6 +124,14 @@ export const Safety: React.FC = () => {
               href={item.link}
               target={item.link.startsWith('http') ? '_blank' : undefined}
               rel={item.link.startsWith('http') ? 'noreferrer' : undefined}
+              data-ga-ui-location="safety_section"
+              data-ga-content-id={item.link.startsWith('tel:') ? 'fire_station_emergency' : 'safety_resource'}
+              data-ga-label={item.text}
+              data-meta-source="safety_section"
+              data-meta-name={item.link.startsWith('tel:') ? 'fire_station_emergency' : 'safety_resource'}
+              data-meta-category={item.link.startsWith('tel:') ? 'emergency' : 'safety'}
+              data-meta-label={item.text}
+              data-meta-contact-method={item.link.startsWith('tel:') ? 'phone' : undefined}
               className="inline-flex items-center gap-2 text-sm underline-offset-4 hover:underline"
             >
               {item.text}

@@ -22,6 +22,16 @@ export const CTABlock: React.FC = () =>
                         fullWidth
                         onClick={openChat}
                         className="text-lg"
+                        data-ga-event="working_lead"
+                        data-ga-lead-status="chat_opened"
+                        data-ga-contact-method="chat"
+                        data-ga-ui-location="hero_cta"
+                        data-ga-content-id="chat_assistant"
+                        data-meta-standard-event="Contact"
+                        data-meta-source="hero_cta"
+                        data-meta-name="chat_assistant"
+                        data-meta-category="support"
+                        data-meta-contact-method="chat"
                     >
                         {t( 'cta_chat' )}
                     </Button>
@@ -30,6 +40,14 @@ export const CTABlock: React.FC = () =>
                         <a
                             href={`tel:${ contactInfo.officeNumber }`}
                             className="flex-1"
+                            data-ga-ui-location="hero_cta"
+                            data-ga-content-id="office_call"
+                            data-ga-label="call_button"
+                            data-meta-source="hero_cta"
+                            data-meta-name="office_call"
+                            data-meta-category="contact"
+                            data-meta-label="call_button"
+                            data-meta-contact-method="phone"
                         >
                             <Button variant="secondary" fullWidth>
                                 {t( 'btn_call' )}
@@ -40,6 +58,14 @@ export const CTABlock: React.FC = () =>
                             className="flex-1"
                             target="_blank"
                             rel="noopener noreferrer"
+                            data-ga-ui-location="hero_cta"
+                            data-ga-content-id="office_whatsapp"
+                            data-ga-label="whatsapp_button"
+                            data-meta-source="hero_cta"
+                            data-meta-name="office_whatsapp"
+                            data-meta-category="contact"
+                            data-meta-label="whatsapp_button"
+                            data-meta-contact-method="whatsapp"
                         >
                             <Button variant="whatsapp" fullWidth>
                                 <span className="inline-flex items-center justify-center gap-2">

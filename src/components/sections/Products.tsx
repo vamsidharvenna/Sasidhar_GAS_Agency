@@ -31,6 +31,14 @@ export const Products: React.FC = () =>
                         href={whatsappUrl}
                         target="_blank"
                         rel="noopener noreferrer"
+                        data-ga-ui-location="products_section"
+                        data-ga-content-id="product_enquiry"
+                        data-ga-label="whatsapp_enquiry"
+                        data-meta-source="products_section"
+                        data-meta-name="product_enquiry"
+                        data-meta-category="products"
+                        data-meta-label="whatsapp_enquiry"
+                        data-meta-contact-method="whatsapp"
                     >
                         <Button variant="whatsapp" fullWidth>
                             {t( 'btn_enquire' )}

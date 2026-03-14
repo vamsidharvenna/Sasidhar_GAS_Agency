@@ -11,6 +11,14 @@ export const StaffCard: React.FC<StaffCardProps> = ({ member }) => {
       href={`tel:${member.phone}`}
       className="flex items-center bg-white p-3 rounded-lg mb-2.5 shadow-[0_1px_3px_rgba(0,0,0,0.1)] transition hover:-translate-y-[1px] focus:outline-none focus:ring-2 focus:ring-[#004A99]/30"
       aria-label={`Call ${member.name}`}
+      data-ga-ui-location="staff_section"
+      data-ga-content-id="staff_call"
+      data-ga-label={member.area}
+      data-meta-source="staff_section"
+      data-meta-name="staff_call"
+      data-meta-category="staff_contact"
+      data-meta-label={member.area}
+      data-meta-contact-method="phone"
     >
       <div className="flex-grow">
         <strong className="text-base">{member.name}</strong>

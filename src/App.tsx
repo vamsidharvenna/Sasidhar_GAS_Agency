@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ChatWidget } from './components/layout/ChatWidget';
 import { FloatingCTA } from './components/layout/FloatingCTA';
 import { Footer } from './components/layout/Footer';
@@ -15,10 +15,22 @@ import { Safety } from './components/sections/Safety';
 import { Staff } from './components/sections/Staff';
 import { ChatProvider } from './context/ChatContext';
 import { LanguageProvider } from './context/LanguageContext';
+import { installGAClickTracker } from './lib/googleAnalytics';
+import { installMetaClickTracker } from './lib/metaPixel';
 import './index.css';
 
 const App: React.FC = () =>
 {
+  useEffect(() => {
+    const removeMetaTracker = installMetaClickTracker();
+    const removeGATracker = installGAClickTracker();
+
+    return () => {
+      removeMetaTracker();
+      removeGATracker();
+    };
+  }, []);
+
   return (
     <LanguageProvider>
       <ChatProvider>

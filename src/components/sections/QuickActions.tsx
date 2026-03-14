@@ -6,6 +6,8 @@ import { Section } from '../ui/Section';
 import { Modal } from '../ui/Modal';
 import { FormField } from '../ui/FormField';
 import { Button } from '../ui/Button';
+import { trackGAEvent, trackGAGenerateLead, trackGASelectContent } from '../../lib/googleAnalytics';
+import { trackMetaCustomEvent, trackMetaStandardEvent } from '../../lib/metaPixel';
 
 type FormType = 'new' | 'complaint' | 'delivery' | null;
 
@@ -59,22 +61,63 @@ export const QuickActions: React.FC = () => {
 
   const handleTileClick = (item: typeof quickActions[0]) => {
     if (item.href) {
+      if (item.href === '#products') {
+        trackGASelectContent('buy_products', 'quick_actions');
+        trackMetaStandardEvent('ViewContent', {
+          source: 'quick_actions',
+          content_name: 'products_section',
+          content_category: 'products',
+        });
+      }
+
+      if (item.href === '#staff') {
+        trackGASelectContent('staff_directory', 'quick_actions');
+        trackMetaCustomEvent('StaffDirectoryViewed', {
+          source: 'quick_actions',
+          content_name: 'staff_directory',
+        });
+      }
+
+      if (item.href === '#safety') {
+        trackGASelectContent('safety_guide', 'quick_actions');
+        trackMetaStandardEvent('ViewContent', {
+          source: 'quick_actions',
+          content_name: 'safety_guide',
+          content_category: 'safety',
+        });
+      }
+
       const element = document.querySelector(item.href);
       element?.scrollIntoView({ behavior: 'smooth' });
       return;
     }
 
     if (item.topic === 'new_connection') {
+      trackGASelectContent('new_lpg_connection', 'quick_actions');
+      trackMetaCustomEvent('LeadFormOpened', {
+        source: 'quick_actions',
+        content_name: 'new_lpg_connection',
+      });
       setActiveForm('new');
       return;
     }
 
     if (item.topic === 'complaint') {
+      trackGASelectContent('complaint_issue', 'quick_actions');
+      trackMetaCustomEvent('ComplaintFormOpened', {
+        source: 'quick_actions',
+        content_name: 'complaint_issue',
+      });
       setActiveForm('complaint');
       return;
     }
 
     if (item.topic === 'delivery') {
+      trackGASelectContent('delivery_estimate', 'quick_actions');
+      trackMetaCustomEvent('DeliveryStatusOpened', {
+        source: 'quick_actions',
+        content_name: 'delivery_status',
+      });
       setActiveForm('delivery');
       return;
     }
@@ -132,6 +175,24 @@ export const QuickActions: React.FC = () => {
       if (!res.ok) {
         const text = await res.text();
         throw new Error(text || `Request failed with status ${res.status}`);
+      }
+
+      if (type === 'complaint') {
+        trackGAEvent('complaint_submit', {
+          form_type: 'complaint_issue',
+          submission_method: 'web_form',
+        });
+        trackMetaCustomEvent('ComplaintSubmitted', {
+          source: 'quick_actions_form',
+          content_name: 'complaint_issue',
+        });
+      } else {
+        trackGAGenerateLead('new_lpg_connection');
+        trackMetaStandardEvent('Lead', {
+          source: 'quick_actions_form',
+          content_name: 'new_lpg_connection',
+          content_category: 'service_request',
+        });
       }
 
       // success: close form and show confirmation
@@ -244,6 +305,15 @@ export const QuickActions: React.FC = () => {
 
     setAreaLoading(true);
     setAreaMessage(null);
+    trackGAEvent('delivery_estimate_check', {
+      lookup_type: 'area',
+      ui_location: 'quick_actions',
+    });
+    trackMetaStandardEvent('Search', {
+      source: 'quick_actions_form',
+      content_name: 'delivery_status',
+      content_category: 'area_lookup',
+    });
 
     try {
       const res = await fetch(`${DELIVERY_API_BASE}/api/web/delivery-status`, {

@@ -37,7 +37,7 @@ const socials = [
   {
     name: 'Instagram',
     helper: 'Open profile',
-    href: 'https://www.instagram.com/',
+    href: 'https://www.instagram.com/sasidhargasagency?igsh=ZWdvcHYxdGJ0Nndq',
     Icon: FaInstagram,
     circle: 'bg-gradient-to-br from-[#f09433] via-[#e6683c] to-[#bc2a8d]',
     tint: 'hover:bg-[rgba(244,144,51,0.05)]',
